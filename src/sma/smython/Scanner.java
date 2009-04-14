@@ -13,7 +13,7 @@ import java.util.Arrays;
 // TODO comments
 public class Scanner {
   private static final Set<String> keywords = new HashSet<String>(Arrays.asList((
-      "and as assert break class continue def del elif else except finally for  from global if import in is " +
+      "and as assert break class continue def del elif else except finally for from global if import in is " +
       "lambda nonlocal not or pass raise return try while with yield None True False").split(" ")));
   private final String source;
   private int index;
