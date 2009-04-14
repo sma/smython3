@@ -49,4 +49,18 @@ public class ScannerTest {
             "def NAME ( ) : NEWLINE INDENT pass NEWLINE DEDENT DEDENT ",
         scan("class C:\n def m():\n  pass\n def m():\n  pass\n"));
   }
+
+  @Test
+  public void syntax() {
+    assertEquals("( ) [ ] { } : ; , . -> @ ... ", scan("()[]{}:;,.->@..."));
+  }
+
+  @Test
+  public void operators() {
+    assertEquals("+ , - , * , / , // , % , ** ", scan("+,-,*,/,//,%,**"));
+    assertEquals("& , | , ^ , ~ , << , >> ", scan("&,|,^,~,<<,>>"));
+    assertEquals("= , += , -= , *= , /= , %= , &= , |= , ^= , <<= , >>= , **= , //= ",
+        scan("=,+=,-=,*=,/=,%=,&=,|=,^=,<<=,>>=,**=,//="));
+    assertEquals("< , > , >= , <= , == , != ", scan("<,>,>=,<=,==,!="));
+  }
 }

@@ -3,13 +3,18 @@
  */
 package sma.smython;
 
-// TODO a lot of operators
-// TODO strings, string escapes, multiline strings
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
+
+// TODO string escapes, multiline strings
 // TODO floats
 // TODO line continuations
+// TODO comments
 public class Scanner {
-  private static final String[] keywords = ("and as assert break class continue def del elif else except finally for " +
-      "from global if import in is lambda nonlocal not or pass raise return try while with yield None True False").split(" ");
+  private static final Set<String> keywords = new HashSet<String>(Arrays.asList((
+      "and as assert break class continue def del elif else except finally for  from global if import in is " +
+      "lambda nonlocal not or pass raise return try while with yield None True False").split(" ")));
   private final String source;
   private int index;
   private int level; // 0 = no open ([{, 1+ = some open ([{
@@ -65,117 +70,264 @@ public class Scanner {
         return "DEDENT";
       }
     }
-    if (Character.isDigit(ch)) {
-      StringBuilder b = new StringBuilder(32);
-      while (Character.isDigit(ch)) {
-        b.append(ch);
-        ch = get();
-      }
-      value = new Integer(b.toString());
-      index -= 1;
-      return "NUM";
-    }
-    if (Character.isLetter(ch)) {
-      StringBuilder b = new StringBuilder(32);
-      while (Character.isLetterOrDigit(ch) || ch == '_') {
-        b.append(ch);
-        ch = get();
-      }
-      value = b.toString();
-      index -= 1;
-      for (String keyword : keywords) {
-        if (keyword.equals(value)) {
-          return keyword;
+    switch (ch) {
+      case '!':
+        if (get() == '=') {
+          return "!=";
         }
-      }
-      return "NAME";
-    }
-    if (ch == ':') {
-      return ":";
-    } else if (ch == ',') {
-      return ",";
-    } else if (ch == ';') {
-      return ";";
-    } else if (ch == '(') {
-      level += 1;
-      return "(";
-    } else if (ch == ')') {
-      level -= 1;
-      return ")";
-    } else if (ch == '[') {
-      level += 1;
-      return "[";
-    } else if (ch == ']') {
-      level -= 1;
-      return "]";
-    } else if (ch == '{') {
-      level += 1;
-      return "{";
-    } else if (ch == '}') {
-      level -= 1;
-      return "}";
-    } else if (ch == '=') {
-      ch = get();
-      if (ch == '=') {
-        return "==";
-      }
-      index -= 1;
-      return "=";
-    } else if (ch == '*') {
-      ch = get();
-      if (ch == '*') {
-        return "**";
-      }
-      index -= 1;
-      return "*";
-    } else if (ch == '+') {
-      ch = get();
-      if (ch == '=') {
-        return "+=";
-      }
-      index -= 1;
-      return "+";
-    } else if (ch == '@') {
-      return "@";
-    } else if (ch == '.') {
-      ch = get();
-      if (ch == '.') {
-        ch = get();
-        if (ch == '.') {
-          return "...";
+        index -= 1;
+        ch = '!'; // invalid character
+        break;
+      case '"':
+        return parseString(ch);
+      case '%':
+        if (get() == '=') {
+          return "%=";
         }
-        index =- 1;
-        return "..";
-      }
-      index -= 1;
-      return ".";
-    } else if (ch == '<') {
-      ch = get();
-      if (ch == '=') {
-        return "<=";
-      } else if (ch == '<') {
-        return "<<";
-      }
-      index -= 1;
-      return "<";
-    } else if (ch == '>') {
-      ch = get();
-      if (ch == '=') {
-        return ">=";
-      } else if (ch == '>') {
-        return ">>";
-      }
-      index -= 1;
-      return ">";
-    } else if (ch == '!') {
-      ch = get();
-      if (ch == '=') {
-        return "!=";
-      }
-      index -= 1;
-      ch = '!'; // this is an error
+        index -= 1;
+        return "%";
+      case '&':
+        if (get() == '=') {
+          return "&=";
+        }
+        index -= 1;
+        return "&";
+      case '\'':
+        return parseString(ch);
+      case '(':
+        level += 1;
+        return "(";
+      case ')':
+        level -= 1;
+        return ")";
+      case '*':
+        ch = get();
+        if (ch == '=') {
+          return "*=";
+        } else if (ch == '*') {
+          if (get() == '=') {
+            return "**=";
+          }
+          index -= 1;
+          return "**";
+        }
+        index -= 1;
+        return "*";
+      case '+':
+        if (get() == '=') {
+          return "+=";
+        }
+        index -= 1;
+        return "+";
+      case ',':
+        return ",";
+      case '-':
+        ch = get();
+        if (ch == '=') {
+          return "-=";
+        } else if (ch == '>') {
+          return "->";
+        }
+        index -= 1;
+        return "-";
+      case '.':
+        if (get() == '.') {
+          if (get() == '.') {
+            return "...";
+          }
+          index -= 1;
+        }
+        index -= 1;
+        return ".";
+      case '/':
+        ch = get();
+        if (ch == '/') {
+          if (get() == '=') {
+            return "//=";
+          }
+          index -= 1;
+          return "//";
+        } else if (ch == '=') {
+          return "/=";
+        }
+        index -= 1;
+        return "/";
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+        return parseNumber(ch);
+      case ':':
+        return ":";
+      case ';':
+        return ";";
+      case '<':
+        ch = get();
+        if (ch == '=') {
+          return "<=";
+        } else if (ch == '<') {
+          if (get() == '=') {
+            return "<<=";
+          }
+          index -= 1;
+          return "<<";
+        }
+        index -= 1;
+        return "<";
+      case '=':
+        if (get() == '=') {
+          return "==";
+        }
+        index -= 1;
+        return "=";
+      case '>':
+        ch = get();
+        if (ch == '=') {
+          return ">=";
+        } else if (ch == '>') {
+          if (get() == '=') {
+            return ">>=";
+          }
+          index -= 1;
+          return ">>";
+        }
+        index -= 1;
+        return ">";
+      case '@':
+        return "@";
+      case 'A':
+      case 'B':
+      case 'C':
+      case 'D':
+      case 'E':
+      case 'F':
+      case 'G':
+      case 'H':
+      case 'I':
+      case 'J':
+      case 'K':
+      case 'L':
+      case 'M':
+      case 'N':
+      case 'O':
+      case 'P':
+      case 'Q':
+      case 'R':
+      case 'S':
+      case 'T':
+      case 'U':
+      case 'V':
+      case 'W':
+      case 'X':
+      case 'Y':
+      case 'Z':
+        return parseName(ch);
+      case '[':
+        level += 1;
+        return "[";
+      case ']':
+        level -= 1;
+        return "]";
+      case '^':
+        if (get() == '=') {
+          return "^=";
+        }
+        index -= 1;
+        return "^";
+      case '_':
+        return parseName(ch);
+      case 'a':
+      case 'b':
+      case 'c':
+      case 'd':
+      case 'e':
+      case 'f':
+      case 'g':
+      case 'h':
+      case 'i':
+      case 'j':
+      case 'k':
+      case 'l':
+      case 'm':
+      case 'n':
+      case 'o':
+      case 'p':
+      case 'q':
+      case 'r':
+      case 's':
+      case 't':
+      case 'u':
+      case 'v':
+      case 'w':
+      case 'x':
+      case 'y':
+      case 'z':
+        return parseName(ch);
+      case '{':
+        level += 1;
+        return "{";
+      case '|':
+        if (get() == '=') {
+          return "|=";
+        }
+        index -= 1;
+        return "|";
+      case '}':
+        level -= 1;
+        return "}";
+      case '~':
+        return "~";
+      default:
+        if (Character.isDigit(ch)) {
+          return parseNumber(ch);
+        } else if (Character.isLetter(ch)) {
+          return parseName(ch);
+        }
     }
     throw new RuntimeException("unexpected " + ch);
+  }
+
+  private String parseString(char q) {
+    StringBuilder b = new StringBuilder(256);
+    char ch = get();
+    while (ch != q) {
+      b.append(ch);
+      ch = get();
+    }
+    value = b.toString();
+    return "STR";
+  }
+
+  private String parseNumber(char ch) {
+    StringBuilder b = new StringBuilder(32);
+    while (Character.isDigit(ch)) {
+      b.append(ch);
+      ch = get();
+    }
+    value = new Integer(b.toString());
+    index -= 1;
+    return "NUM";
+  }
+
+  private String parseName(char ch) {
+    StringBuilder b = new StringBuilder(32);
+    while (Character.isLetterOrDigit(ch) || ch == '_') {
+      b.append(ch);
+      ch = get();
+    }
+    index -= 1;
+    String keyword = b.toString();
+    value = keyword;
+    if (keywords.contains(keyword)) {
+      return keyword;
+    }
+    return "NAME";
   }
 
   public Object value() {
