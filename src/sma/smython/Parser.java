@@ -719,21 +719,21 @@ public class Parser {
     } else if (is("NAME")) {
       return new Expr.Var(parseName());
     } else if (is("NUM")) {
-      return new Expr.Lit(value());
+      return new Expr.Lit(Python.Int((Integer) value()));
     } else if (is("STR")) {
       String s = (String) value();
       while (is("STR")) {
         s += (String) value();
       }
-      return new Expr.Lit(s);
+      return new Expr.Lit(Python.Str(s));
     } else if (at("...")) {
-      return new Expr.Lit("...");
+      return new Expr.Lit(Python.Str("..."));
     } else if (at("None")) {
-      return new Expr.Lit(null);
+      return new Expr.Lit(Python.None);
     } else if (at("True")) {
-      return new Expr.Lit(true);
+      return new Expr.Lit(Python.True);
     } else if (at("False")) {
-      return new Expr.Lit(false);
+      return new Expr.Lit(Python.False);
     }
     return null;
   }

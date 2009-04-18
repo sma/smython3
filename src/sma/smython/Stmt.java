@@ -3,10 +3,14 @@
  */
 package sma.smython;
 
+import sma.smython.Python.*;
+
 import java.util.List;
 
 /** Represents an AST statement. */
 abstract class Stmt {
+  abstract void execute(Frame f);
+
   static String join(List<?> objects, Object separator) {
     StringBuilder b = new StringBuilder();
     for (Object object : objects) {
@@ -31,12 +35,31 @@ abstract class Stmt {
     public String toString() {
       return "@" + join(dottedName, ".") + (arglist == null ? "" : arglist);
     }
+
+    Obj eval(Frame f) {
+      Obj obj = null;
+      for (String name : dottedName) {
+        if (obj == null) {
+          obj = f.get(new Str(name));
+        } else {
+          obj = obj.getAttr(new Str(name));
+        }
+      }
+      if (arglist != null) {
+        obj = obj.call(f, arglist.eval(f));
+      }
+      return obj;
+    }
   }
 
   static class Break extends Stmt {
     @Override
     public String toString() {
       return "Break";
+    }
+
+    void execute(Frame f) {
+      throw Python.breakException;
     }
   }
 
@@ -45,13 +68,21 @@ abstract class Stmt {
     public String toString() {
       return "Continue";
     }
+
+    void execute(Frame f) {
+      throw Python.continueException;
+    }
   }
 
   static class Del extends Stmt {
-    private final ExprList exprList;
+    final ExprList exprList;
 
     public Del(ExprList exprList) {
       this.exprList = exprList;
+    }
+
+    void execute(Frame f) {
+      // TODO delete all target expressions from Frame
     }
 
     @Override
@@ -61,6 +92,9 @@ abstract class Stmt {
   }
 
   static class Pass extends Stmt {
+    void execute(Frame f) {
+    }
+
     @Override
     public String toString() {
       return "Pass";
@@ -73,6 +107,11 @@ abstract class Stmt {
     Return(ExprList exprList) {
       this.exprList = exprList;
     }
+
+    void execute(Frame f) {
+      f.result = exprList.eval(f);
+      throw Python.returnException;
+    }
   }
 
   static class Raise extends Stmt {
@@ -83,6 +122,10 @@ abstract class Stmt {
       this.exception = exception;
       this.from = from;
     }
+
+    void execute(Frame f) {
+      throw new UnsupportedOperationException();
+    }
   }
 
   static class Yield extends Stmt {
@@ -91,6 +134,10 @@ abstract class Stmt {
     Yield(Expr expr) {
       this.expr = expr;
     }
+
+    void execute(Frame f) {
+      throw new UnsupportedOperationException();
+    }
   }
 
   static class Import extends Stmt {
@@ -98,6 +145,10 @@ abstract class Stmt {
 
     Import(List<DottedName> dottedNames) {
       this.dottedNames = dottedNames;
+    }
+
+    void execute(Frame f) {
+      throw new UnsupportedOperationException();
     }
 
     @Override
@@ -130,6 +181,10 @@ abstract class Stmt {
       this.importNames = importNames;
     }
 
+    void execute(Frame f) {
+      throw new UnsupportedOperationException();
+    }
+
     @Override
     public String toString() {
       return "From(" + join(dottedName, ".") + ", " + importNames + ")";
@@ -157,6 +212,9 @@ abstract class Stmt {
     Global(List<String> names) {
       this.names = names;
     }
+
+    void execute(Frame f) {
+    }
   }
 
   static class Nonlocal extends Stmt {
@@ -164,6 +222,9 @@ abstract class Stmt {
 
     Nonlocal(List<String> names) {
       this.names = names;
+    }
+
+    void execute(Frame f) {
     }
   }
 
@@ -175,6 +236,12 @@ abstract class Stmt {
       this.test = test;
       this.message = message;
     }
+
+    void execute(Frame f) {
+      if (!test.eval(f).truish()) {
+        throw new AssertionError(message.eval(f));
+      }
+    }
   }
 
   static class AddAssign extends Stmt {
@@ -184,6 +251,10 @@ abstract class Stmt {
     AddAssign(ExprList left, ExprList right) {
       this.left = left;
       this.right = right;
+    }
+
+    void execute(Frame f) {
+      left.set(f, left.eval(f).add(right.eval(f)));
     }
   }
 
@@ -195,6 +266,10 @@ abstract class Stmt {
       this.left = left;
       this.right = right;
     }
+
+    void execute(Frame f) {
+      left.set(f, left.eval(f).sub(right.eval(f)));
+    }
   }
 
   static class Assign extends Stmt {
@@ -205,6 +280,10 @@ abstract class Stmt {
       this.left = left;
       this.right = right;
     }
+
+    void execute(Frame f) {
+      left.set(f, right.eval(f));
+    }
   }
 
   static class ExprStmt extends Stmt {
@@ -212,6 +291,10 @@ abstract class Stmt {
 
     ExprStmt(ExprList exprList) {
       this.exprList = exprList;
+    }
+
+    void execute(Frame f) {
+      exprList.eval(f);
     }
 
     @Override
@@ -231,6 +314,14 @@ abstract class Stmt {
       this.elseSuite = elseSuite;
     }
 
+    void execute(Frame f) {
+      if (testExpr.eval(f).truish()) {
+        thenSuite.execute(f);
+      } else {
+        elseSuite.execute(f);
+      }
+    }
+
     @Override
     public String toString() {
       return "If(" + testExpr + ", " + thenSuite + ", " + elseSuite + ")";
@@ -246,6 +337,22 @@ abstract class Stmt {
       this.testExpr = testExpr;
       this.bodySuite = bodySuite;
       this.elseSuite = elseSuite;
+    }
+
+    void execute(Frame f) {
+      while (testExpr.eval(f).truish()) {
+        try {
+          bodySuite.execute(f);
+        } catch (RuntimeException e) {
+          if (e == Python.breakException) {
+            return;
+          }
+          if (e != Python.continueException) {
+            throw e;
+          }
+        }
+      }
+      elseSuite.execute(f);
     }
 
     @Override
@@ -267,6 +374,26 @@ abstract class Stmt {
       this.elseSuite = elseSuite;
     }
 
+    void execute(Frame f) {
+      Python.Obj iter = items.eval(f).iter();
+      Python.Obj next = iter.next();
+      while (next != null) {
+        names.set(f, next);
+        try {
+          bodySuite.execute(f);
+        } catch (RuntimeException e) {
+          if (e == Python.breakException) {
+            return;
+          }
+          if (e != Python.continueException) {
+            throw e;
+          }
+        }
+        next = iter.next();
+      }
+      elseSuite.execute(f);
+    }
+
     @Override
     public String toString() {
       return "For(" + names + ", " + items + (elseSuite == null ? "" : ", " + elseSuite) + ")";
@@ -284,6 +411,28 @@ abstract class Stmt {
       this.exceptList = exceptList;
       this.elseSuite = elseSuite;
       this.finallySuite = finallySuite;
+    }
+
+    void execute(Frame f) {
+      try {
+        boolean doElse = false;
+        try {
+          bodySuite.execute(f);
+          doElse = elseSuite != null;
+        } catch (RuntimeException e) {
+          for (Except ex : exceptList) {
+            // TODO find the matching Except clause
+            ex.clause.eval(f);
+          }
+        }
+        if (doElse) {
+          elseSuite.execute(f);
+        }
+      } finally {
+        if (finallySuite != null) {
+          finallySuite.execute(f);
+        }
+      }
     }
   }
 
@@ -307,22 +456,43 @@ abstract class Stmt {
       this.binding = binding;
       this.bodySuite = bodySuite;
     }
+
+    void execute(Frame f) {
+      Python.Obj obj = expr.eval(f);
+      if (binding != null) {
+        binding.set(f, obj);
+      }
+      // TODO call __enter__
+      try {
+        bodySuite.execute(f);
+      } finally {
+        // TODO call __exit__
+      }
+    }
   }
 
   static class FuncDef extends Stmt {
-    final String name;
+    final Str name;
     final Params params;
     final Suite body;
     List<Decorator> decorators;
 
     FuncDef(String name, Params params, Suite body) {
-      this.name = name;
+      this.name = new Str(name);
       this.params = params;
       this.body = body;
     }
 
     void setDecorators(List<Decorator> decorators) {
       this.decorators = decorators;
+    }
+
+    void execute(Frame f) {
+      Obj func = new Func(name, params, body, f.globals);
+      for (Decorator decorator : decorators) {
+        func = decorator.eval(f).call(f, func);
+      }
+      f.set(name, func);
     }
 
     @Override
@@ -336,19 +506,29 @@ abstract class Stmt {
   }
 
   static class ClassDef extends Stmt {
-    final String name;
+    final Str name;
     final Arglist arglist;
     final Suite body;
     List<Decorator> decorators;
 
     ClassDef(String name, Arglist arglist, Suite body) {
-      this.name = name;
+      this.name = new Str(name);
       this.arglist = arglist;
       this.body = body;
     }
 
     void setDecorators(List<Decorator> decorators) {
       this.decorators = decorators;
+    }
+
+    void execute(Frame f) {
+      Dict dict = new Dict();
+      body.execute(new Frame(dict, f.globals));
+      Obj type = new Type(name, arglist.eval(f), dict);
+      for (Decorator decorator : decorators) {
+        type = decorator.eval(f).call(f, type);
+      }
+      f.set(name, type);
     }
 
     @Override

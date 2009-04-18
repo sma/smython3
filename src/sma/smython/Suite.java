@@ -14,6 +14,12 @@ class Suite {
     stmts.add(stmt);
   }
 
+  void execute(Frame f) {
+    for (Stmt stmt : stmts) {
+      stmt.execute(f);
+    }
+  }
+
   @Override
   public String toString() {
     return "Suite" + stmts;

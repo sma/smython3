@@ -3,11 +3,19 @@
  */
 package sma.smython;
 
-import java.util.List;
+import sma.smython.Python.*;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /** Represents an AST expression. */
 abstract class Expr {
+  abstract Obj eval(Frame f);
+
+  void set(Frame f, Obj value) {
+    throw new UnsupportedOperationException();
+  }
+
   static class Lambda extends Expr {
     final Params params;
     final Expr test;
@@ -15,6 +23,15 @@ abstract class Expr {
     Lambda(Params params, Expr test) {
       this.params = params;
       this.test = test;
+    }
+
+    Obj eval(Frame f) {
+      ExprList exprList = new ExprList();
+      exprList.add(test);
+      Suite suite = new Suite();
+      suite.add(new Stmt.Return(exprList));
+      Str name = new Str("<lambda>");
+      return new Func(name, params, suite, f.globals);
     }
   }
 
@@ -28,6 +45,10 @@ abstract class Expr {
       this.consequence = consequence;
       this.alternative = alternative;
     }
+
+    Obj eval(Frame f) {
+      return (condition.eval(f).truish() ? consequence : alternative).eval(f);
+    }
   }
 
   static class And extends Expr {
@@ -37,6 +58,11 @@ abstract class Expr {
     And(Expr left, Expr right) {
       this.left = left;
       this.right = right;
+    }
+
+    Obj eval(Frame f) {
+      Obj result = left.eval(f);
+      return result.truish() ? right.eval(f) : result;
     }
   }
 
@@ -48,6 +74,11 @@ abstract class Expr {
       this.left = left;
       this.right = right;
     }
+
+    Obj eval(Frame f) {
+      Obj result = left.eval(f);
+      return result.truish() ? result : right.eval(f);
+    }
   }
 
   static class Not extends Expr {
@@ -55,6 +86,10 @@ abstract class Expr {
 
     Not(Expr test) {
       this.test = test;
+    }
+
+    Obj eval(Frame f) {
+      return Python.bool(test.eval(f).truish());
     }
   }
 
@@ -68,6 +103,10 @@ abstract class Expr {
 
     void add(Comp comp) {
       comps.add(comp);
+    }
+
+    Obj eval(Frame f) {
+      throw new UnsupportedOperationException();
     }
 
     @Override
@@ -197,6 +236,10 @@ abstract class Expr {
     Star(Expr expr) {
       this.expr = expr;
     }
+
+    Obj eval(Frame f) {
+      throw new UnsupportedOperationException();
+    }
   }
 
   static class BitOr extends Expr {
@@ -206,6 +249,10 @@ abstract class Expr {
     BitOr(Expr left, Expr right) {
       this.left = left;
       this.right = right;
+    }
+
+    Obj eval(Frame f) {
+      return left.eval(f).or(right.eval(f));
     }
   }
 
@@ -217,6 +264,10 @@ abstract class Expr {
       this.left = left;
       this.right = right;
     }
+
+    Obj eval(Frame f) {
+      return left.eval(f).xor(right.eval(f));
+    }
   }
 
   static class BitAnd extends Expr {
@@ -226,6 +277,10 @@ abstract class Expr {
     BitAnd(Expr left, Expr right) {
       this.left = left;
       this.right = right;
+    }
+
+    Obj eval(Frame f) {
+      return left.eval(f).and(right.eval(f));
     }
   }
 
@@ -237,6 +292,10 @@ abstract class Expr {
       this.left = left;
       this.right = right;
     }
+
+    Obj eval(Frame f) {
+      return left.eval(f).lshift(right.eval(f));
+    }
   }
 
   static class BitShiftRight extends Expr {
@@ -247,6 +306,10 @@ abstract class Expr {
       this.left = left;
       this.right = right;
     }
+
+    Obj eval(Frame f) {
+      return left.eval(f).rshift(right.eval(f));
+    }
   }
 
   static class Add extends Expr {
@@ -256,6 +319,10 @@ abstract class Expr {
     Add(Expr left, Expr right) {
       this.left = left;
       this.right = right;
+    }
+
+    Obj eval(Frame f) {
+      return left.eval(f).add(right.eval(f));
     }
 
     @Override
@@ -272,6 +339,10 @@ abstract class Expr {
       this.left = left;
       this.right = right;
     }
+
+    Obj eval(Frame f) {
+      return left.eval(f).sub(right.eval(f));
+    }
   }
 
   static class Mul extends Expr {
@@ -281,6 +352,10 @@ abstract class Expr {
     Mul(Expr left, Expr right) {
       this.left = left;
       this.right = right;
+    }
+
+    Obj eval(Frame f) {
+      return left.eval(f).mul(right.eval(f));
     }
   }
 
@@ -292,6 +367,10 @@ abstract class Expr {
       this.left = left;
       this.right = right;
     }
+
+    Obj eval(Frame f) {
+      return left.eval(f).div(right.eval(f));
+    }
   }
 
   static class Mod extends Expr {
@@ -301,6 +380,10 @@ abstract class Expr {
     Mod(Expr left, Expr right) {
       this.left = left;
       this.right = right;
+    }
+
+    Obj eval(Frame f) {
+      return left.eval(f).mod(right.eval(f));
     }
   }
 
@@ -312,6 +395,10 @@ abstract class Expr {
       this.left = left;
       this.right = right;
     }
+
+    Obj eval(Frame f) {
+      return left.eval(f).intDiv(right.eval(f));
+    }
   }
 
   static class UnaryMinus extends Expr {
@@ -319,6 +406,10 @@ abstract class Expr {
 
     UnaryMinus(Expr expr) {
       this.expr = expr;
+    }
+
+    Obj eval(Frame f) {
+      return expr.eval(f).neg();
     }
   }
 
@@ -328,6 +419,10 @@ abstract class Expr {
     UnaryPlus(Expr expr) {
       this.expr = expr;
     }
+
+    Obj eval(Frame f) {
+      return expr.eval(f).pos();
+    }
   }
 
   static class BitNeg extends Expr {
@@ -335,6 +430,10 @@ abstract class Expr {
 
     BitNeg(Expr expr) {
       this.expr = expr;
+    }
+
+    Obj eval(Frame f) {
+      return expr.eval(f).invert();
     }
   }
 
@@ -345,6 +444,10 @@ abstract class Expr {
     Call(Expr callable, Arglist arglist) {
       this.callable = callable;
       this.arglist = arglist;
+    }
+
+    Obj eval(Frame f) {
+      return callable.eval(f).call(f, arglist.eval(f));
     }
 
     @Override
@@ -362,6 +465,10 @@ abstract class Expr {
       this.index = index;
     }
 
+    Obj eval(Frame f) {
+      return obj.eval(f).getItem(index.eval(f));
+    }
+
     @Override
     public String toString() {
       return "GetItem(" + obj + ", " + index + ")"; 
@@ -376,6 +483,10 @@ abstract class Expr {
       this.obj = obj;
       this.name = name;
     }
+
+    Obj eval(Frame f) {
+      return obj.eval(f).getAttr(new Str(name));
+    }
   }
 
   static class Power extends Expr {
@@ -386,13 +497,21 @@ abstract class Expr {
       this.left = left;
       this.right = right;
     }
+
+    Obj eval(Frame f) {
+      return left.eval(f).power(right.eval(f));
+    }
   }
 
   static class Lit extends Expr {
-    final Object value;
+    final Obj value;
 
-    Lit(Object value) {
+    Lit(Obj value) {
       this.value = value;
+    }
+
+    Obj eval(Frame f) {
+      return value;
     }
 
     @Override
@@ -402,10 +521,14 @@ abstract class Expr {
   }
 
   static class Var extends Expr {
-    final String name;
+    final Str name;
 
     Var(String name) {
-      this.name = name;
+      this.name = new Str(name); // TODO parser needs to generate Str not String
+    }
+
+    Obj eval(Frame f) {
+      return f.get(name); // TODO parser needs to distinguish locals and globals
     }
 
     @Override
@@ -419,6 +542,10 @@ abstract class Expr {
 
     Yield(ExprList exprList) {
       this.exprList = exprList;
+    }
+
+    Obj eval(Frame f) {
+      throw new UnsupportedOperationException();
     }
   }
 
@@ -467,6 +594,10 @@ abstract class Expr {
       this.key = key;
       this.value = value;
     }
+
+    Obj eval(Frame f) {
+      return new Python.List(key.eval(f), value.eval(f));
+    }
   }
 
   static class DictCompr extends Expr {
@@ -477,6 +608,10 @@ abstract class Expr {
       this.kv = kv;
       this.compr = compr;
     }
+
+    Obj eval(Frame f) {
+      throw new UnsupportedOperationException(); // TODO create a generator type
+    }
   }
 
   static class DictConstr extends Expr {
@@ -484,6 +619,17 @@ abstract class Expr {
 
     DictConstr(ExprList exprList) {
       this.exprList = exprList;
+    }
+
+    Obj eval(Frame f) {
+      Obj dict = new Dict();
+      Obj iter = exprList.eval(f).iter();
+      Obj next = iter.next();
+      while (next != null) {
+        dict.setItem(next.getItem(Python.Int(0)), next.getItem(Python.Int(1)));
+        next = iter.next();
+      }
+      return dict;
     }
   }
 
@@ -495,6 +641,10 @@ abstract class Expr {
       this.expr = expr;
       this.compr = compr;
     }
+
+    Obj eval(Frame f) {
+      throw new UnsupportedOperationException(); // TODO create a generator type
+    }
   }
 
   static class SetConstr extends Expr {
@@ -502,6 +652,10 @@ abstract class Expr {
 
     SetConstr(ExprList exprList) {
       this.exprList = exprList;
+    }
+
+    Obj eval(Frame f) {
+      throw new UnsupportedOperationException(); // TODO create a set type
     }
   }
 
@@ -512,6 +666,10 @@ abstract class Expr {
     ListCompr(Expr expr, Compr compr) {
       this.expr = expr;
       this.compr = compr;
+    }
+
+    Obj eval(Frame f) {
+      throw new UnsupportedOperationException(); // TODO create a generator type
     }
 
     @Override
@@ -525,6 +683,10 @@ abstract class Expr {
 
     ListConstr(ExprList exprList) {
       this.exprList = exprList;
+    }
+
+    Obj eval(Frame f) {
+      throw new UnsupportedOperationException(); // TODO create a set type
     }
 
     @Override
@@ -541,6 +703,10 @@ abstract class Expr {
       this.expr = expr;
       this.compr = compr;
     }
+
+    Obj eval(Frame f) {
+      throw new UnsupportedOperationException(); // TODO create a generator type
+    }
   }
 
   static class Slice extends Expr {
@@ -552,6 +718,10 @@ abstract class Expr {
       this.start = start;
       this.stop = stop;
       this.step = step;
+    }
+
+    Obj eval(Frame f) {
+      throw new UnsupportedOperationException(); // TODO create a slice type
     }
 
     @Override

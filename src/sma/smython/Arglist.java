@@ -3,6 +3,9 @@
  */
 package sma.smython;
 
+import sma.smython.Python.Obj;
+import sma.smython.Python.Str;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +20,7 @@ class Arglist {
     positionals.add(value);
   }
 
-  void addKeyword(String name, Expr value) {
+  void addKeyword(Str name, Expr value) {
     keywords.add(new KwExpr(name, value));
   }
 
@@ -59,11 +62,15 @@ class Arglist {
     return s + "]";
   }
 
+  Obj[] eval(Frame f) {
+    throw new UnsupportedOperationException();
+  }
+
   static class KwExpr {
-    final String name;
+    final Str name;
     final Expr value;
 
-    public KwExpr(String name, Expr value) {
+    public KwExpr(Str name, Expr value) {
       this.name = name;
       this.value = value;
     }
