@@ -172,10 +172,33 @@ public class Parser {
   // expr_stmt: testlist (augassign (yield_expr|testlist) | ('=' (yield_expr|testlist))*)
   Stmt parseExprStmt() {
     ExprList tl1 = parseTestList();
+    Expr left = tl1.exprs.get(0);
     if (at("+=")) {
-      return new Stmt.AddAssign(tl1, parseAssign());
+      return new Stmt.AddAssign(left, parseAssign());
     } else if (at("-=")) {
-      return new Stmt.SubAssign(tl1, parseAssign());
+      return new Stmt.SubAssign(left, parseAssign());
+    } else if (at("-=")) {
+      return new Stmt.SubAssign(left, parseAssign());
+    } else if (at("*=")) {
+      return new Stmt.MulAssign(left, parseAssign());
+    } else if (at("/=")) {
+      return new Stmt.DivAssign(left, parseAssign());
+    } else if (at("//=")) {
+      return new Stmt.IntDivAssign(left, parseAssign());
+    } else if (at("%=")) {
+      return new Stmt.ModAssign(left, parseAssign());
+    } else if (at("**=")) {
+      return new Stmt.PowerAssign(left, parseAssign());
+    } else if (at(">>=")) {
+      return new Stmt.RshiftAssign(left, parseAssign());
+    } else if (at("<<=")) {
+      return new Stmt.LshiftAssign(left, parseAssign());
+    } else if (at("&=")) {
+      return new Stmt.AndAssign(left, parseAssign());
+    } else if (at("^=")) {
+      return new Stmt.XorAssign(left, parseAssign());
+    } else if (at("|=")) {
+      return new Stmt.OrAssign(left, parseAssign());
     }
     if (at("=")) {
       return new Stmt.Assign(tl1, parseAssign()); // TODO support a = b = c
@@ -226,7 +249,7 @@ public class Parser {
       exprList.add(parseYieldExpr());
       return exprList;
     }
-    return parseExprList();
+    return parseExprList(true);
   }
 
   // compound_stmt: if_stmt | while_stmt | for_stmt | try_stmt | with_stmt | funcdef | classdef | decorated
@@ -882,9 +905,15 @@ public class Parser {
 
   // exprlist: star_expr (',' star_expr)* [',']
   ExprList parseExprList() {
+    return parseExprList(false);
+  }
+
+  ExprList parseExprList(boolean single) {
     ExprList exprList = new ExprList();
+    exprList.single = single;
     exprList.add(parseStarExpr());
     while (at(",")) {
+      exprList.single = false;
       Expr e = parseStarExpr();
       if (e == null) {
         break;

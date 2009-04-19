@@ -279,31 +279,144 @@ abstract class Stmt {
     }
   }
 
-  static class AddAssign extends Stmt {
-    final ExprList left;
+  static abstract class AugAssign extends Stmt {
+    final Expr left;
     final ExprList right;
 
-    AddAssign(ExprList left, ExprList right) {
+    AugAssign(Expr left, ExprList right) {
       this.left = left;
       this.right = right;
     }
 
     void execute(Frame f) {
-      left.set(f, left.eval(f).add(right.eval(f)));
+      left.set(f, op(left.eval(f), right.eval(f)));
+    }
+
+    abstract Obj op(Obj a, Obj b);
+
+    @Override
+    public String toString() {
+      return getClass().getSimpleName() + "(" + left + ", " + right + ")";
     }
   }
 
-  static class SubAssign extends Stmt {
-    final ExprList left;
-    final ExprList right;
-
-    SubAssign(ExprList left, ExprList right) {
-      this.left = left;
-      this.right = right;
+  static class AddAssign extends AugAssign {
+    AddAssign(Expr left, ExprList right) {
+      super(left, right);
     }
 
-    void execute(Frame f) {
-      left.set(f, left.eval(f).sub(right.eval(f)));
+    Obj op(Obj a, Obj b) {
+      return a.add(b);
+    }
+  }
+
+  static class SubAssign extends AugAssign {
+    SubAssign(Expr left, ExprList right) {
+      super(left, right);
+    }
+
+    Obj op(Obj a, Obj b) {
+      return a.sub(b);
+    }
+  }
+
+  static class MulAssign extends AugAssign {
+    MulAssign(Expr left, ExprList right) {
+      super(left, right);
+    }
+
+    Obj op(Obj a, Obj b) {
+      return a.mul(b);
+    }
+  }
+
+  static class DivAssign extends AugAssign {
+    DivAssign(Expr left, ExprList right) {
+      super(left, right);
+    }
+
+    Obj op(Obj a, Obj b) {
+      return a.div(b);
+    }
+  }
+
+  static class IntDivAssign extends AugAssign {
+    IntDivAssign(Expr left, ExprList right) {
+      super(left, right);
+    }
+
+    Obj op(Obj a, Obj b) {
+      return a.intDiv(b);
+    }
+  }
+
+  static class ModAssign extends AugAssign {
+    ModAssign(Expr left, ExprList right) {
+      super(left, right);
+    }
+
+    Obj op(Obj a, Obj b) {
+      return a.mod(b);
+    }
+  }
+
+  static class PowerAssign extends AugAssign {
+    PowerAssign(Expr left, ExprList right) {
+      super(left, right);
+    }
+
+    Obj op(Obj a, Obj b) {
+      return a.power(b);
+    }
+  }
+
+  static class RshiftAssign extends AugAssign {
+    RshiftAssign(Expr left, ExprList right) {
+      super(left, right);
+    }
+
+    Obj op(Obj a, Obj b) {
+      return a.rshift(b);
+    }
+  }
+
+  static class LshiftAssign extends AugAssign {
+    LshiftAssign(Expr left, ExprList right) {
+      super(left, right);
+    }
+
+    Obj op(Obj a, Obj b) {
+      return a.lshift(b);
+    }
+  }
+
+  static class AndAssign extends AugAssign {
+    AndAssign(Expr left, ExprList right) {
+      super(left, right);
+    }
+
+    Obj op(Obj a, Obj b) {
+      return a.and(b);
+    }
+  }
+
+  static class XorAssign extends AugAssign {
+    XorAssign(Expr left, ExprList right) {
+      super(left, right);
+    }
+
+    Obj op(Obj a, Obj b) {
+      return a.xor(b);
+    }
+  }
+
+  static class OrAssign extends AugAssign {
+    OrAssign(Expr left, ExprList right) {
+      super(left, right);
+    }
+
+    Obj op(Obj a, Obj b) {
+      return a.or(b);
     }
   }
 

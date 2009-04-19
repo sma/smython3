@@ -93,3 +93,36 @@ Suite[Nonlocal[A, B, C]]
 Suite[Assert(Lit(1))]
 >>> assert 1, 2
 Suite[Assert(Lit(1), Lit(2))]
+
+# augmented assignments
+>>> a += 1
+Suite[AddAssign(Var(a), (Lit(1)))]
+>>> b -= 1
+Suite[SubAssign(Var(b), (Lit(1)))]
+>>> c *= 1
+Suite[MulAssign(Var(c), (Lit(1)))]
+>>> d /= 1
+Suite[DivAssign(Var(d), (Lit(1)))]
+>>> e //= 1
+Suite[IntDivAssign(Var(e), (Lit(1)))]
+>>> f %= 1
+Suite[ModAssign(Var(f), (Lit(1)))]
+>>> g **= 1
+Suite[PowerAssign(Var(g), (Lit(1)))]
+>>> h >>= 1
+Suite[RshiftAssign(Var(h), (Lit(1)))]
+>>> i <<= 1
+Suite[LshiftAssign(Var(i), (Lit(1)))]
+>>> j &= 1
+Suite[AndAssign(Var(j), (Lit(1)))]
+>>> k ^= 1
+Suite[XorAssign(Var(k), (Lit(1)))]
+>>> l |= 1
+Suite[OrAssign(Var(l), (Lit(1)))]
+
+>>> x += 1,
+Suite[AddAssign(Var(x), [Lit(1)])]
+>>> y += 1, 2
+Suite[AddAssign(Var(y), [Lit(1), Lit(2)])]
+>>> z += 1, 2,
+Suite[AddAssign(Var(z), [Lit(1), Lit(2)])]
