@@ -11,3 +11,13 @@ Suite[Pass]
 Suite[Break]
 >>> continue
 Suite[Continue]
+
+# del statement
+>>> del a
+Suite[Del[Var(a)]]
+>>> del a,
+Suite[Del[Var(a)]]
+>>> del a, b
+Suite[Del[Var(a), Var(b)]]
+>>> del a, b,
+Suite[Del[Var(a), Var(b)]]
