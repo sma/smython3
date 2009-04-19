@@ -5,3 +5,9 @@
 # pass statement
 >>> pass
 Suite[Pass]
+
+# break & continue (TODO must only occur in loops)
+>>> break
+Suite[Break]
+>>> continue
+Suite[Continue]
