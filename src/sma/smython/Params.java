@@ -31,7 +31,8 @@ class Params {
       locals.setItem(param.name, args[i]);
     }
     for (int i = args.length; i < params.size(); i++) {
-
+      Param param = params.get(i);
+      locals.setItem(param.name, param.init.eval(f)); // TODO this should be evaluated on function declaration
     }
     return locals;
   }

@@ -35,5 +35,11 @@ public class PythonTest {
     assertEquals(Python.Int(42), exec("def f(): return 42\nf()\n"));
     assertEquals(new Python.List(Python.Int(0)), exec("def f(): return 0,\nf()\n"));
     assertEquals(new Python.List(Python.Int(3), Python.Int(4)), exec("def f(): return 3, 4\nf()\n"));
-  } 
+  }
+
+  @Test
+  public void callAFunctionWithAnArgument() {
+    assertEquals(Python.Int(42), exec("def f(a): return a\nf(42)\n"));
+    assertEquals(Python.Int(42), exec("def f(a=42): return a\nf()\n"));
+  }
 }
