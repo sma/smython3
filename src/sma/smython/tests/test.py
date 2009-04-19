@@ -53,3 +53,11 @@ Suite[Yield[Lit(null)]]
 Suite[Yield[Lit(1), Lit(2)]]
 >>> yield 1, 2,
 Suite[Yield[Lit(1), Lit(2)]]
+
+# import statement
+>>> import a
+Suite[Import[a]]
+>>> import a as b
+Suite[Import[a as b]]
+>>> import a, b.c as bc, d.e.f as g
+Suite[Import[a, b.c as bc, d.e.f as g]]
