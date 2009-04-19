@@ -63,7 +63,11 @@ class Arglist {
   }
 
   Obj[] eval(Frame f) {
-    throw new UnsupportedOperationException();
+    Obj[] args = new Obj[positionals.size()];
+    for (int i = 0; i < args.length; i++) {
+      args[i] = positionals.get(i).eval(f);
+    }
+    return args;
   }
 
   static class KwExpr {

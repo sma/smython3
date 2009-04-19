@@ -11,6 +11,11 @@ import java.util.List;
 abstract class Stmt {
   abstract void execute(Frame f);
 
+  Obj eval(Frame f) {
+    execute(f);
+    return Python.None;
+  }
+
   static String join(List<?> objects, Object separator) {
     StringBuilder b = new StringBuilder();
     for (Object object : objects) {
@@ -111,6 +116,11 @@ abstract class Stmt {
     void execute(Frame f) {
       f.result = exprList.eval(f);
       throw Python.returnException;
+    }
+
+    @Override
+    public String toString() {
+      return "Return" + exprList;
     }
   }
 
@@ -295,6 +305,11 @@ abstract class Stmt {
 
     void execute(Frame f) {
       exprList.eval(f);
+    }
+
+    @Override
+    Obj eval(Frame f) {
+      return exprList.eval(f);
     }
 
     @Override
@@ -489,8 +504,10 @@ abstract class Stmt {
 
     void execute(Frame f) {
       Obj func = new Func(name, params, body, f.globals);
-      for (Decorator decorator : decorators) {
-        func = decorator.eval(f).call(f, func);
+      if (decorators != null) {
+        for (Decorator decorator : decorators) {
+          func = decorator.eval(f).call(f, func);
+        }
       }
       f.set(name, func);
     }

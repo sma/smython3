@@ -3,6 +3,8 @@
  */
 package sma.smython;
 
+import sma.smython.Python.*;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -20,6 +22,18 @@ class Params {
 
   void setReturnType(Expr returnType) {
     this.returnType = returnType;
+  }
+
+  Dict bind(Frame f, Obj[] args) {
+    Dict locals = new Dict();
+    for (int i = 0; i < args.length; i++) {
+      Param param = params.get(i);
+      locals.setItem(param.name, args[i]);
+    }
+    for (int i = args.length; i < params.size(); i++) {
+
+    }
+    return locals;
   }
 
   @Override
@@ -47,12 +61,12 @@ class Params {
   }
 
   static class Param {
-    final String name;
+    final Str name;
     final Expr type;
     final Expr init;
 
     Param(String name, Expr type, Expr init) {
-      this.name = name;
+      this.name = new Str(name);
       this.type = type;
       this.init = init;
     }

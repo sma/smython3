@@ -52,7 +52,7 @@ public class Python {
       throw new UnsupportedOperationException();
     }
 
-    public Obj call(Frame f, Obj... objs) {
+    public Obj call(Frame f, Obj... args) {
       throw new UnsupportedOperationException();
     }
 
@@ -215,6 +215,11 @@ public class Python {
     public void setItem(Obj key, Obj value) {
       values.set(((Int) key).value, value);
     }
+
+    @Override
+    public boolean equals(Object o) {
+      return o instanceof List && ((List) o).values.equals(values);
+    }
   }
 
   static class Dict extends Obj {
@@ -244,8 +249,14 @@ public class Python {
       this.values = values;
     }
 
+    @Override
     public Obj getItem(Obj key) {
       return values.get(key);
+    }
+
+    @Override
+    public void setItem(Obj key, Obj value) {
+      values.put(key, value);
     }
   }
 
@@ -260,6 +271,17 @@ public class Python {
       this.params = params;
       this.body = body;
       this.globals = globals;
+    }
+
+    @Override
+    public Obj call(Frame f, Obj... args) {
+      f = new Frame(params.bind(f, args), globals);
+      try {
+        body.execute(f);
+      } catch (RuntimeException e) {
+        return f.result;
+      }
+      return Python.None;
     }
   }
 

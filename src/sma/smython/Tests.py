@@ -88,3 +88,12 @@ Suite[Expr[Comparison(Lit(1) == Lit(2))]]
 Suite[Expr[Comparison(Lit(1) < Var(b) < Lit(2))]]
 >>> 1 < 2 > 3 <= 4 >= 5 == 6 != 7 in 8 not in 9 is 10 is not 11
 Suite[Expr[Comparison(Lit(1) < Lit(2) > Lit(3) <= Lit(4) >= Lit(5) == Lit(6) != Lit(7) in Lit(8) not in Lit(9) is Lit(10) is not Lit(11))]]
+
+>>> return
+Suite[Return(Lit(null))]
+>>> return 1
+Suite[Return(Lit(1))]
+>>> return 1,
+Suite[Return[Lit(1)]]
+>>> return 1, 2
+Suite[Return[Lit(1), Lit(2)]]

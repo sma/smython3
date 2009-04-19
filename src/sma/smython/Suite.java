@@ -20,6 +20,14 @@ class Suite {
     }
   }
 
+  Python.Obj eval(Frame f) {
+    Python.Obj result = Python.None;
+    for (Stmt stmt : stmts) {
+      result = stmt.eval(f);
+    }
+    return result;
+  }
+
   @Override
   public String toString() {
     return "Suite" + stmts;

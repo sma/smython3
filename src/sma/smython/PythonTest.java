@@ -15,8 +15,23 @@ public class PythonTest {
     return result.getItem(Python.Int(0));
   }
 
+  private Python.Obj exec(String source) {
+    Parser parser = new Parser(new Scanner(source));
+    Suite suite = parser.parseFileInput();
+    Frame frame = new Frame(new Python.Dict(), new Python.Dict());
+    Python.Obj result = suite.eval(frame);
+    return result.getItem(Python.Int(0));
+  }
+
+
   @Test
   public void addTwoNumbers() {
     assertEquals(Python.Int(7), eval("3+4"));
+  }
+
+  @Test
+  public void callAFunction() {
+    assertEquals(Python.Int(42), exec("def f(): return 42\nf()\n"));
+    assertEquals(new Python.List(Python.Int(3), Python.Int(4)), exec("def f(): return 3, 4\nf()\n"));
   }
 }
