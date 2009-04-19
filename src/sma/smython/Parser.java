@@ -177,8 +177,6 @@ public class Parser {
       return new Stmt.AddAssign(left, parseAssign());
     } else if (at("-=")) {
       return new Stmt.SubAssign(left, parseAssign());
-    } else if (at("-=")) {
-      return new Stmt.SubAssign(left, parseAssign());
     } else if (at("*=")) {
       return new Stmt.MulAssign(left, parseAssign());
     } else if (at("/=")) {
