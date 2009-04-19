@@ -33,3 +33,11 @@ Suite[Return[Lit(null)]]
 Suite[Return[Lit(1), Lit(2)]]
 >>> return 1, 2,
 Suite[Return[Lit(1), Lit(2)]]
+
+# raise statement
+>>> raise
+Suite[Raise()]
+>>> raise SyntaxError
+Suite[Raise(Var(SyntaxError))]
+>>> raise SyntaxError from None
+Suite[Raise(Var(SyntaxError), Lit(null))]

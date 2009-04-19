@@ -136,6 +136,11 @@ abstract class Stmt {
     void execute(Frame f) {
       throw new UnsupportedOperationException();
     }
+
+    @Override
+    public String toString() {
+      return "Raise(" + (exception == null ? "" : exception + (from == null ? "" : ", " + from)) + ")";
+    }
   }
 
   static class Yield extends Stmt {
