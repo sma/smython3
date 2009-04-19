@@ -152,3 +152,13 @@ Suite[Assign((Var(a)), [Lit(1), Lit(2)])]
 Suite[Assign([Var(a), Var(b)], [Lit(1), Lit(2)])]
 >>> a, b, = 1, 2,
 Suite[Assign([Var(a), Var(b)], [Lit(1), Lit(2)])]
+
+# statement expression
+>>> print
+Suite[Expr(Var(print))]
+>>> print,
+Suite[Expr[Var(print)]]
+>>> print, 1
+Suite[Expr[Var(print), Lit(1)]]
+>>> print, 2,
+Suite[Expr[Var(print), Lit(2)]]
