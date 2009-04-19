@@ -61,3 +61,17 @@ Suite[Import[a]]
 Suite[Import[a as b]]
 >>> import a, b.c as bc, d.e.f as g
 Suite[Import[a, b.c as bc, d.e.f as g]]
+
+# from statement
+>>> from a import c
+Suite[From(a, [c])]
+>>> from a import c as d
+Suite[From(a, [c as d])]
+>>> from a.b import c, d as e, f as g
+Suite[From(a.b, [c, d as e, f as g])]
+>>> from a.b import *
+Suite[From(a.b, [])]
+>>> from a.b.c import (a, b as c)
+Suite[From(a.b.c, [a, b as c])]
+>>> from a.b.c import (a, b as c,)
+Suite[From(a.b.c, [a, b as c])]

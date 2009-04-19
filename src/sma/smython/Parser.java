@@ -5,6 +5,7 @@ package sma.smython;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 
 // TODO optional arguments for return and yield
 // TODO expression lists add a null
@@ -142,7 +143,7 @@ public class Parser {
       expect("import");
       List<Stmt.NameAlias> names;
       if (at("*")) {
-        names = null;
+        names = Collections.emptyList();
       } else if (at("(")) {
         names = parseImportAsNames();
         expect(")");
@@ -204,6 +205,9 @@ public class Parser {
     List<Stmt.NameAlias> names = new ArrayList<Stmt.NameAlias>();
     names.add(parseImportAsName());
     while (at(",")) {
+      if (is(")")) {
+        break;
+      }
       names.add(parseImportAsName());
     }
     return names;
