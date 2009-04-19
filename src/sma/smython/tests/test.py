@@ -21,3 +21,15 @@ Suite[Del[Var(a)]]
 Suite[Del[Var(a), Var(b)]]
 >>> del a, b,
 Suite[Del[Var(a), Var(b)]]
+
+# return statement (TODO must only occur in functions)
+>>> return
+Suite[Return(Lit(null))]
+>>> return None
+Suite[Return(Lit(null))]
+>>> return None,
+Suite[Return[Lit(null)]]
+>>> return 1, 2
+Suite[Return[Lit(1), Lit(2)]]
+>>> return 1, 2,
+Suite[Return[Lit(1), Lit(2)]]
