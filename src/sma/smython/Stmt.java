@@ -432,6 +432,11 @@ abstract class Stmt {
     void execute(Frame f) {
       left.set(f, right.eval(f));
     }
+
+    @Override
+    public String toString() {
+      return "Assign(" + left + ", " + right + ")";
+    }
   }
 
   static class ExprStmt extends Stmt {

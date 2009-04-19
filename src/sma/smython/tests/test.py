@@ -126,3 +126,29 @@ Suite[AddAssign(Var(x), [Lit(1)])]
 Suite[AddAssign(Var(y), [Lit(1), Lit(2)])]
 >>> z += 1, 2,
 Suite[AddAssign(Var(z), [Lit(1), Lit(2)])]
+
+# assignment statement
+>>> a = 1
+Suite[Assign((Var(a)), (Lit(1)))]
+>>> a = 1,
+Suite[Assign((Var(a)), [Lit(1)])]
+>>> a, = 1
+Suite[Assign([Var(a)], (Lit(1)))]
+>>> a, = 1,
+Suite[Assign([Var(a)], [Lit(1)])]
+>>> a, b = 1
+Suite[Assign([Var(a), Var(b)], (Lit(1)))]
+>>> a, b, = 1
+Suite[Assign([Var(a), Var(b)], (Lit(1)))]
+>>> a, b = 1,
+Suite[Assign([Var(a), Var(b)], [Lit(1)])]
+>>> a, b, = 1,
+Suite[Assign([Var(a), Var(b)], [Lit(1)])]
+>>> a = 1, 2
+Suite[Assign((Var(a)), [Lit(1), Lit(2)])]
+>>> a = 1, 2,
+Suite[Assign((Var(a)), [Lit(1), Lit(2)])]
+>>> a, b = 1, 2
+Suite[Assign([Var(a), Var(b)], [Lit(1), Lit(2)])]
+>>> a, b, = 1, 2,
+Suite[Assign([Var(a), Var(b)], [Lit(1), Lit(2)])]

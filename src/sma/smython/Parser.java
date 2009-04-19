@@ -171,7 +171,7 @@ public class Parser {
 
   // expr_stmt: testlist (augassign (yield_expr|testlist) | ('=' (yield_expr|testlist))*)
   Stmt parseExprStmt() {
-    ExprList tl1 = parseTestList();
+    ExprList tl1 = parseTestList(true);
     Expr left = tl1.exprs.get(0);
     if (at("+=")) {
       return new Stmt.AddAssign(left, parseAssign());
