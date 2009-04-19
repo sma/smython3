@@ -19,6 +19,31 @@ public class ParserTest {
     return parser.parseFileInput().toString();
   }
 
+  private void testFile(String name) throws IOException {
+    InputStream in = ParserTest.class.getResourceAsStream(name);
+    BufferedReader r = new BufferedReader(new InputStreamReader(in));
+    try {
+      String line = r.readLine();
+      String test = "";
+      while (line != null) {
+        line = line.trim();
+        if (line.startsWith("#")) {
+        } else if (line.startsWith(">>> ") || line.startsWith("... ")) {
+          test += line.substring(4) + "\n";
+        } else if (line.length() > 0) {
+          assertEquals(line, parse(test));
+          test = "";
+        }
+        line = r.readLine();
+      }
+      if (test.length() > 0) {
+        fail("missing assert line");
+      }
+    } finally {
+      r.close();
+    }
+  }
+
   @Test
   public void parseBreak() {
     assertEquals("Suite[Break]", parse("break\n"));
@@ -43,27 +68,11 @@ public class ParserTest {
 
   @Test
   public void parseFromTestsPy() throws IOException {
-    InputStream in = ParserTest.class.getResourceAsStream("Tests.py");
-    BufferedReader r = new BufferedReader(new InputStreamReader(in));
-    try {
-      String line = r.readLine();
-      String test = "";
-      while (line != null) {
-        line = line.trim();
-        if (line.startsWith("###")) {
-        } else if (line.startsWith(">>> ") || line.startsWith("... ")) {
-          test += line.substring(4) + "\n";
-        } else if (line.length() > 0) {
-          assertEquals(line, parse(test));
-          test = "";
-        }
-        line = r.readLine();
-      }
-      if (test.length() > 0) {
-        fail("missing assert line");
-      }
-    } finally {
-      r.close();
-    }
+    testFile("Tests.py");
+  }
+
+  @Test
+  public void parsePythonTests() throws IOException {
+    testFile("tests/test.py");
   }
 }
