@@ -1,12 +1,15 @@
 SMYTHON 3
 =========
-Smython is my attempt to implement to implement a scanner, parser and
-(eventually) runtime system for a large subset of Python 3 in Java.
+Smython is my attempt to implement a scanner, parser and runtime system for a
+large subset of Python 3 in Java with the idea in mind, to eventually run this
+on the Google App Engine for Java.
 
 Current State
 -------------
 
 I can parse most stuff according to <http://docs.python.org/dev/py3k/reference/grammar.html>.
+
+I have an experimental runtime system (which cannot implement `yield`) in place.
 
 
 License
