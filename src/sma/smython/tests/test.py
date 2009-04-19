@@ -75,3 +75,9 @@ Suite[From(a.b, [])]
 Suite[From(a.b.c, [a, b as c])]
 >>> from a.b.c import (a, b as c,)
 Suite[From(a.b.c, [a, b as c])]
+
+# global statement
+>>> global A
+Suite[Global[A]]
+>>> global A, B, C
+Suite[Global[A, B, C]]

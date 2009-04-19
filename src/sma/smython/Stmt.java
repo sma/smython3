@@ -235,6 +235,11 @@ abstract class Stmt {
 
     void execute(Frame f) {
     }
+
+    @Override
+    public String toString() {
+      return "Global" + names;
+    }
   }
 
   static class Nonlocal extends Stmt {
