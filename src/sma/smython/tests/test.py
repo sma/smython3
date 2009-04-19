@@ -81,3 +81,9 @@ Suite[From(a.b.c, [a, b as c])]
 Suite[Global[A]]
 >>> global A, B, C
 Suite[Global[A, B, C]]
+
+# nonlocal statement
+>>> nonlocal A
+Suite[Nonlocal[A]]
+>>> nonlocal A, B, C
+Suite[Nonlocal[A, B, C]]

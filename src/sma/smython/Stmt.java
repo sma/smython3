@@ -251,6 +251,11 @@ abstract class Stmt {
 
     void execute(Frame f) {
     }
+
+    @Override
+    public String toString() {
+      return "Nonlocal" + names;
+    }
   }
 
   static class Assert extends Stmt {
