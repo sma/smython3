@@ -157,6 +157,11 @@ public class Python {
     public int hashCode() {
       return value;
     }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
   }
 
   static class Str extends Obj {
@@ -174,6 +179,11 @@ public class Python {
     @Override
     public int hashCode() {
       return value.hashCode();
+    }
+
+    @Override
+    public String toString() {
+      return value;
     }
   }
 
