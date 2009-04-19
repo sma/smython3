@@ -272,6 +272,11 @@ abstract class Stmt {
         throw new AssertionError(message.eval(f));
       }
     }
+
+    @Override
+    public String toString() {
+      return "Assert(" + test + (message == null ? "" : ", " + message) + ")";
+    }
   }
 
   static class AddAssign extends Stmt {

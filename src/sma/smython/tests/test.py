@@ -87,3 +87,9 @@ Suite[Global[A, B, C]]
 Suite[Nonlocal[A]]
 >>> nonlocal A, B, C
 Suite[Nonlocal[A, B, C]]
+
+# assert statement
+>>> assert 1
+Suite[Assert(Lit(1))]
+>>> assert 1, 2
+Suite[Assert(Lit(1), Lit(2))]
