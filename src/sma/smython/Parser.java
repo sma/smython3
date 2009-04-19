@@ -244,6 +244,7 @@ public class Parser {
   ExprList parseAssign() {
     if (at("yield")) {
       ExprList exprList = new ExprList();
+      exprList.single = true;
       exprList.add(parseYieldExpr());
       return exprList;
     }

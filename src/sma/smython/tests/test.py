@@ -94,7 +94,7 @@ Suite[Assert(Lit(1))]
 >>> assert 1, 2
 Suite[Assert(Lit(1), Lit(2))]
 
-# augmented assignments
+# augmented assignment
 >>> a += 1
 Suite[AddAssign(Var(a), (Lit(1)))]
 >>> b -= 1
@@ -120,12 +120,28 @@ Suite[XorAssign(Var(k), (Lit(1)))]
 >>> l |= 1
 Suite[OrAssign(Var(l), (Lit(1)))]
 
+# augmented assignment with tuples
 >>> x += 1,
 Suite[AddAssign(Var(x), [Lit(1)])]
 >>> y += 1, 2
 Suite[AddAssign(Var(y), [Lit(1), Lit(2)])]
 >>> z += 1, 2,
 Suite[AddAssign(Var(z), [Lit(1), Lit(2)])]
+
+# augmented assignment with yield
+>>> a += yield
+Suite[AddAssign(Var(a), (Yield(Lit(null))))]
+>>> a += yield 1
+Suite[AddAssign(Var(a), (Yield(Lit(1))))]
+>>> a += yield 1,
+Suite[AddAssign(Var(a), (Yield[Lit(1)]))]
+>>> a += yield 1, 2
+Suite[AddAssign(Var(a), (Yield[Lit(1), Lit(2)]))]
+>>> a += yield 1, 2,
+Suite[AddAssign(Var(a), (Yield[Lit(1), Lit(2)]))]
+#TODO make this work
+#>>> a += b, (yield 1), c
+#Suite[AddAssign(Var(a), [Var(b), Yield(Lit(1)), Var(c)])]
 
 # assignment statement
 >>> a = 1
@@ -152,6 +168,21 @@ Suite[Assign((Var(a)), [Lit(1), Lit(2)])]
 Suite[Assign([Var(a), Var(b)], [Lit(1), Lit(2)])]
 >>> a, b, = 1, 2,
 Suite[Assign([Var(a), Var(b)], [Lit(1), Lit(2)])]
+
+# assignment with yield
+>>> a = yield
+Suite[Assign((Var(a)), (Yield(Lit(null))))]
+>>> a = yield 1
+Suite[Assign((Var(a)), (Yield(Lit(1))))]
+>>> a = yield 1,
+Suite[Assign((Var(a)), (Yield[Lit(1)]))]
+>>> a = yield 1, 2
+Suite[Assign((Var(a)), (Yield[Lit(1), Lit(2)]))]
+>>> a = yield 1, 2,
+Suite[Assign((Var(a)), (Yield[Lit(1), Lit(2)]))]
+#TODO make this work
+#>>> a = b, (yield 1), c
+#Suite[Assign(Var(a), [Var(b), Yield(Lit(1)), Var(c)])]
 
 # statement expression
 >>> print
