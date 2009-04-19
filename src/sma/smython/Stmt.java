@@ -153,6 +153,11 @@ abstract class Stmt {
     void execute(Frame f) {
       throw new UnsupportedOperationException();
     }
+
+    @Override
+    public String toString() {
+      return expr.toString();
+    }
   }
 
   static class Import extends Stmt {

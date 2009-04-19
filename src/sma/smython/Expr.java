@@ -547,6 +547,11 @@ abstract class Expr {
     Obj eval(Frame f) {
       throw new UnsupportedOperationException();
     }
+
+    @Override
+    public String toString() {
+      return "Yield" + exprList;
+    }
   }
 
   /** Represents the iterator and condition part of a comprehension. */

@@ -116,13 +116,7 @@ public class Parser {
     }
     if (at("return")) {
       // return_stmt: 'return' [testlist]
-      if (is("NEWLINE") || is(";")) { // TODO share with yield
-        ExprList exprList = new ExprList();
-        exprList.add(new Expr.Lit(Python.None));
-        exprList.single = true;
-        return new Stmt.Return(exprList);
-      }
-      return new Stmt.Return(parseTestList(true));
+      return new Stmt.Return(parseOptionalTestList());
     }
     if (at("raise")) {
       // raise_stmt: 'raise' [test ['from' test]]
@@ -823,7 +817,7 @@ public class Parser {
 
   // yield_expr: 'yield' [testlist]
   Expr parseYieldExpr() {
-    return new Expr.Yield(parseTestList()); //TODO can be optional
+    return new Expr.Yield(parseOptionalTestList());
   }
 
   // testlist_comp: test ( comp_for | (',' test)* [','] )
@@ -904,7 +898,11 @@ public class Parser {
   ExprList parseTestList(boolean single) {
     ExprList testlist = new ExprList();
     testlist.single = single;
-    testlist.add(parseTest());
+    Expr test = parseTest();
+    if (single && test == null) {
+      return testlist;
+    }
+    testlist.add(test);
     while (at(",")) {
       testlist.single = false;
       Expr t = parseTest();
@@ -914,6 +912,14 @@ public class Parser {
       testlist.add(t);
     }
     return testlist;
+  }
+
+  ExprList parseOptionalTestList() {
+    ExprList testList = parseTestList(true);
+    if (testList.exprs.size() == 0) {
+      testList.add(new Expr.Lit(Python.None));
+    }
+    return testList;
   }
 
   // arglist: (argument ',')* (argument [',']

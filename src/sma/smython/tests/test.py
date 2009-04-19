@@ -41,3 +41,15 @@ Suite[Raise()]
 Suite[Raise(Var(SyntaxError))]
 >>> raise SyntaxError from None
 Suite[Raise(Var(SyntaxError), Lit(null))]
+
+# yield statement (TODO must only occur in functions) 
+>>> yield
+Suite[Yield(Lit(null))]
+>>> yield None
+Suite[Yield(Lit(null))]
+>>> yield None,
+Suite[Yield[Lit(null)]]
+>>> yield 1, 2
+Suite[Yield[Lit(1), Lit(2)]]
+>>> yield 1, 2,
+Suite[Yield[Lit(1), Lit(2)]]
