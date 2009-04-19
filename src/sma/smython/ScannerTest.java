@@ -17,6 +17,9 @@ public class ScannerTest {
         return b.toString();
       }
       b.append(token);
+      if (token.equals("NAME")) {
+        b.append('«').append(scanner.value()).append('»');
+      }
       b.append(' ');
     }
   }
@@ -28,7 +31,7 @@ public class ScannerTest {
 
   @Test
   public void simpleTokens() {
-    assertEquals("NUM if NAME : return ", scan("1 if a: return"));
+    assertEquals("NUM if NAME«a» : return ", scan("1 if a: return"));
   }
 
   @Test
@@ -38,15 +41,15 @@ public class ScannerTest {
 
   @Test
   public void indent() {
-    assertEquals("def NAME ( ) : NEWLINE INDENT return DEDENT ", scan("def a():\n return"));
+    assertEquals("def NAME«a» ( ) : NEWLINE INDENT return DEDENT ", scan("def a():\n return"));
   }
 
   @Test
   public void moreIndent() {
     assertEquals(
-        "class NAME : NEWLINE INDENT " +
-            "def NAME ( ) : NEWLINE INDENT pass NEWLINE DEDENT " +
-            "def NAME ( ) : NEWLINE INDENT pass NEWLINE DEDENT DEDENT ",
+        "class NAME«C» : NEWLINE INDENT " +
+            "def NAME«m» ( ) : NEWLINE INDENT pass NEWLINE DEDENT " +
+            "def NAME«m» ( ) : NEWLINE INDENT pass NEWLINE DEDENT DEDENT ",
         scan("class C:\n def m():\n  pass\n def m():\n  pass\n"));
   }
 
@@ -56,11 +59,39 @@ public class ScannerTest {
   }
 
   @Test
+  public void dots() {
+    assertEquals(". ", scan("."));
+    assertEquals(". . ", scan(".."));
+    assertEquals("... ", scan("..."));
+  }
+
+  @Test
   public void operators() {
     assertEquals("+ , - , * , / , // , % , ** ", scan("+,-,*,/,//,%,**"));
     assertEquals("& , | , ^ , ~ , << , >> ", scan("&,|,^,~,<<,>>"));
     assertEquals("= , += , -= , *= , /= , %= , &= , |= , ^= , <<= , >>= , **= , //= ",
         scan("=,+=,-=,*=,/=,%=,&=,|=,^=,<<=,>>=,**=,//="));
     assertEquals("< , > , >= , <= , == , != ", scan("<,>,>=,<=,==,!="));
+  }
+
+  @Test
+  public void names() {
+    assertEquals("NAME«__init__» NAME«foo_bar» NAME«äÖïË» ", scan("__init__ foo_bar äÖïË"));
+  }
+
+  @Test
+  public void strings() {
+    assertEquals("STR STR STR ", scan("'' 'a' 'abc'"));
+    assertEquals("STR STR STR ", scan("\"\" \"a\" \"abc\""));
+  }
+
+  @Test
+  public void exoticNumber() {
+    assertEquals("NUM ", scan("\u0664\u06F2")); // arabic
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void invalid() {
+    scan("!");
   }
 }
