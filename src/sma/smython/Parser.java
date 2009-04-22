@@ -982,10 +982,6 @@ public class Parser {
     return exprList;
   }
 
-  ExprList parseTestList() {
-    return parseTestList(false);
-  }
-
   // testlist: test (',' test)* [',']
   ExprList parseTestList(boolean single) {
     ExprList testlist = new ExprList();
