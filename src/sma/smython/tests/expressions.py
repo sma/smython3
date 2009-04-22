@@ -181,3 +181,9 @@ Suite[Expr(Pos(Pos(Var(a))))]
 Suite[Expr(Pos(Neg(Var(a))))]
 >>> -a+-b
 Suite[Expr(Add(Neg(Var(a)), Neg(Var(b))))]
+
+# power expression
+>>> a ** b
+Suite[Expr(Power(Var(a), Var(b)))]
+>>> a ** b ** c
+Suite[Expr(Power(Var(a), Power(Var(b), Var(c))))]

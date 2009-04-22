@@ -596,6 +596,11 @@ abstract class Expr {
     Obj eval(Frame f) {
       return left.eval(f).power(right.eval(f));
     }
+
+    @Override
+    public String toString() {
+      return "Power(" + left + ", " + right + ")";
+    }
   }
 
   static class Lit extends Expr {
