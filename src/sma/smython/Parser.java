@@ -7,16 +7,11 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 
-// TODO optional arguments for return and yield
-// TODO expression lists add a null
 // TODO add messages to exceptions
-// TODO implement import statements
 // TODO check that break/continue occur only in loops
 // TODO check that return occurs only in functions
 // TODO implement global and nonlocal so that Var becomes GlobalVar or NonLocalVar
 // TODO check whether Var is a LocalVar
-// TODO "test" for assignment is way to general in the syntax
-// TODO need to distinguish 3, and 3 for ExprStmt and others!
 
 /** Parses a sequence of tokens provided by a scanner into AST nodes. */
 public class Parser {
