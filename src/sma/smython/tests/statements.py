@@ -97,18 +97,24 @@ SyntaxError
 Suite[Global[A]]
 >>> global A, B, C
 Suite[Global[A, B, C]]
+>>> global
+SyntaxError
 
 # nonlocal statement
 >>> nonlocal A
 Suite[Nonlocal[A]]
 >>> nonlocal A, B, C
 Suite[Nonlocal[A, B, C]]
+>>> nonlocal
+SyntaxError
 
 # assert statement
 >>> assert 1
 Suite[Assert(Lit(1))]
 >>> assert 1, 2
 Suite[Assert(Lit(1), Lit(2))]
+>>> assert
+SyntaxError
 
 # augmented assignment
 >>> a += 1

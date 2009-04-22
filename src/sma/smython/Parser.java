@@ -163,6 +163,9 @@ public class Parser {
     if (at("assert")) {
       // assert_stmt: 'assert' test [',' test]
       Expr test1 = parseTest();
+      if (test1 == null) {
+        throw new ParserException();
+      }
       Expr test2 = at(",") ? parseTest() : null;
       return new Stmt.Assert(test1, test2);
     }
