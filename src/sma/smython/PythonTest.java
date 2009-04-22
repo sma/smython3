@@ -20,7 +20,7 @@ public class PythonTest {
     Suite suite = parser.parseFileInput();
     Frame frame = new Frame(new Python.Dict(), new Python.Dict());
     Python.Obj result = suite.eval(frame);
-    return result.getItem(Python.Int(0));
+    return result;
   }
 
 
