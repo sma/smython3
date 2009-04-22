@@ -61,6 +61,12 @@ Suite[Import[a]]
 Suite[Import[a as b]]
 >>> import a, b.c as bc, d.e.f as g
 Suite[Import[a, b.c as bc, d.e.f as g]]
+>>> import
+SyntaxError
+>>> import a.
+SyntaxError
+>>> import a as
+SyntaxError
 
 # from statement
 >>> from a import c
@@ -75,6 +81,16 @@ Suite[From(a.b, [])]
 Suite[From(a.b.c, [a, b as c])]
 >>> from a.b.c import (a, b as c,)
 Suite[From(a.b.c, [a, b as c])]
+>>> from
+SyntaxError
+>>> from a
+SyntaxError
+>>> from a.
+SyntaxError
+>>> from a.b import
+SyntaxError
+>>> from a.b import c as
+SyntaxError
 
 # global statement
 >>> global A
