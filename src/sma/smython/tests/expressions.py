@@ -219,3 +219,59 @@ SyntaxError
 SyntaxError
 >>> [a for a in 1, 2, 3]
 SyntaxError
+
+# dicts
+>>> {}
+Suite[Expr(DictConstr[])]
+>>> {a: 1}
+Suite[Expr(DictConstr[Var(a), Lit(1)])]
+>>> {a: 1,}
+Suite[Expr(DictConstr[Var(a), Lit(1)])]
+>>> {a: 1, b: 2}
+Suite[Expr(DictConstr[Var(a), Lit(1), Var(b), Lit(2)])]
+>>> {a: 1, b: 2,}
+Suite[Expr(DictConstr[Var(a), Lit(1), Var(b), Lit(2)])]
+>>> {a:}
+SyntaxError
+>>> {a: 1, b:}
+SyntaxError
+>>> {a: a+1 for a in items}
+Suite[Expr(DictCompr(Var(a), Add(Var(a), Lit(1)) for [Var(a)] in Var(items)))]
+>>> {a: a+1 for a in items if 1}
+Suite[Expr(DictCompr(Var(a), Add(Var(a), Lit(1)) for [Var(a)] in Var(items) if Lit(1)))]
+>>> {for a in b}
+SyntaxError
+>>> {a: 1 for a}
+SyntaxError
+>>> {a: 1 for a if b}
+SyntaxError
+>>> {a: 1 for a in 1, 2, 3}
+SyntaxError
+
+# sets
+>>> {1}
+Suite[Expr(SetConstr[Lit(1)])]
+>>> {1,}
+Suite[Expr(SetConstr[Lit(1)])]
+>>> {1, 2}
+Suite[Expr(SetConstr[Lit(1), Lit(2)])]
+>>> {1, 2,}
+Suite[Expr(SetConstr[Lit(1), Lit(2)])]
+>>> {a for a in items}
+Suite[Expr(SetCompr(Var(a) for [Var(a)] in Var(items)))]
+>>> {a for a in items if 1}
+Suite[Expr(SetCompr(Var(a) for [Var(a)] in Var(items) if Lit(1)))]
+>>> {for a in b}
+SyntaxError
+>>> {a for a}
+SyntaxError
+>>> {a for a if b}
+SyntaxError
+>>> {a for a in 1, 2, 3}
+SyntaxError
+
+# complex comprehensions
+>>> [a + b for a in items1 for b in items2]
+Suite[Expr(ListCompr(Add(Var(a), Var(b)) for [Var(a)] in Var(items1) for [Var(b)] in Var(items2)))]
+>>> {a for a in items if 1 if 2}
+Suite[Expr(SetCompr(Var(a) for [Var(a)] in Var(items) if Lit(1) if Lit(2)))]

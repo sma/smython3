@@ -826,37 +826,49 @@ public class Parser {
   // dictorsetmaker: ( (test ':' test (comp_for | (',' test ':' test)* [','])) |
   //                   (test (comp_for | (',' test)* [','])) )
   Expr parseDictOrSetMaker() {
-    Expr test = parseTest();
+    Expr key = parseTest();
+    if (key == null) {
+      return new Expr.DictConstr(new ExprList());
+    }
     if (at(":")) {
       // dict
-      Expr.KV assoc = new Expr.KV(test, parseTest());
+      Expr value = parseTest();
+      if (value == null) {
+          throw new ParserException();
+        }
       if (at("for")) {
-        return new Expr.DictCompr(assoc, parseCompFor(null));
+        return new Expr.DictCompr(key, value, parseCompFor(null));
       }
       ExprList testList = new ExprList();
-      testList.add(test);
+      testList.add(key);
+      testList.add(value);
       while (at(",")) {
-        Expr t = parseTest();
-        if (t == null) {
+        key = parseTest();
+        if (key == null) {
           break;
         }
+        testList.add(key);
         expect(":");
-        testList.add(new Expr.KV(t, parseTest()));
+        value = parseTest();
+        if (value == null) {
+          throw new ParserException();
+        }
+        testList.add(value);
       }
       return new Expr.DictConstr(testList);
     } else {
       // set
       if (at("for")) {
-        return new Expr.SetCompr(test, parseCompFor(null));
+        return new Expr.SetCompr(key, parseCompFor(null));
       }
       ExprList testList = new ExprList();
-      testList.add(test);
+      testList.add(key);
       while (at(",")) {
-        Expr t = parseTest();
-        if (t == null) {
+        key = parseTest();
+        if (key == null) {
           break;
         }
-        testList.add(t);
+        testList.add(key);
       }
       return new Expr.SetConstr(testList);
     }

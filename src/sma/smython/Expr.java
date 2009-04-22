@@ -671,7 +671,7 @@ abstract class Expr {
 
     @Override
     public String toString() {
-      return " for " + vars + " in " + items;
+      return (compr == null ? "" : compr) + " for " + vars + " in " + items;
     }
   }
 
@@ -690,32 +690,24 @@ abstract class Expr {
     }
   }
 
-  /** Represents a key-value pair for dict comprehensions and dict makers. */
-  static class KV extends Expr {
+  static class DictCompr extends Expr {
     final Expr key;
     final Expr value;
-
-    KV(Expr key, Expr value) {
-      this.key = key;
-      this.value = value;
-    }
-
-    Obj eval(Frame f) {
-      return new Python.List(key.eval(f), value.eval(f));
-    }
-  }
-
-  static class DictCompr extends Expr {
-    final KV kv;
     final Compr compr;
 
-    DictCompr(KV kv, Compr compr) {
-      this.kv = kv;
+    public DictCompr(Expr key, Expr value, Compr compr) {
+      this.key = key;
+      this.value = value;
       this.compr = compr;
     }
 
     Obj eval(Frame f) {
       throw new UnsupportedOperationException(); // TODO create a generator type
+    }
+
+    @Override
+    public String toString() {
+      return "DictCompr(" + key + ", " + value + compr + ")";
     }
   }
 
@@ -736,6 +728,11 @@ abstract class Expr {
       }
       return dict;
     }
+
+    @Override
+    public String toString() {
+      return "DictConstr" + exprList;
+    }
   }
 
   static class SetCompr extends Expr {
@@ -750,6 +747,11 @@ abstract class Expr {
     Obj eval(Frame f) {
       throw new UnsupportedOperationException(); // TODO create a generator type
     }
+
+    @Override
+    public String toString() {
+      return "SetCompr(" + expr + compr + ")";
+    }
   }
 
   static class SetConstr extends Expr {
@@ -761,6 +763,11 @@ abstract class Expr {
 
     Obj eval(Frame f) {
       throw new UnsupportedOperationException(); // TODO create a set type
+    }
+
+    @Override
+    public String toString() {
+      return "SetConstr" + exprList;
     }
   }
 
