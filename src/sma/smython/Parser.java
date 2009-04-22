@@ -51,6 +51,10 @@ public class Parser {
     }
   }
 
+  int line() {
+    return scanner.line();
+  }
+
   // file_input: (NEWLINE | stmt)* ENDMARKER
   Suite parseFileInput() {
     Suite suite = new Suite();
