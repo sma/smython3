@@ -467,3 +467,100 @@ Suite[With(Var(a), Suite[Pass])]
 Suite[With(Var(a), Var(b), Suite[Pass])]
 >>> with: pass
 SyntaxError
+
+# def statement (body suite alternations)
+>>> def a(): pass
+Suite[Def(a, [], Suite[Pass])]
+>>> def a():
+...   pass
+Suite[Def(a, [], Suite[Pass])]
+>>> def a(): pass; pass
+Suite[Def(a, [], Suite[Pass, Pass])]
+>>> def a():
+...   pass; pass
+Suite[Def(a, [], Suite[Pass, Pass])]
+>>> def a():
+...   pass
+...   pass
+Suite[Def(a, [], Suite[Pass, Pass])]
+
+# def statement inside a def statement
+>>> def a():
+...   def b(): pass
+Suite[Def(a, [], Suite[Def(b, [], Suite[Pass])])]
+
+# decorated def statement
+>>> @deco
+... def a(): pass
+Suite[Def(a, [], Suite[Pass], [@deco])]
+>>> @deco1
+... @deco2
+... def a(): pass
+Suite[Def(a, [], Suite[Pass], [@deco1, @deco2])]
+>>> @deco(1, 2)
+... def a(): pass
+Suite[Def(a, [], Suite[Pass], [@deco[Lit(1), Lit(2)]])]
+
+# def statement (parameter list alternations)
+>>> def a(x): pass
+Suite[Def(a, [x], Suite[Pass])]
+>>> def a(x,): pass
+Suite[Def(a, [x], Suite[Pass])]
+>>> def a(x, y): pass
+Suite[Def(a, [x, y], Suite[Pass])]
+>>> def a(x, y,): pass
+Suite[Def(a, [x, y], Suite[Pass])]
+
+>>> def a(x=0): pass
+Suite[Def(a, [x=Lit(0)], Suite[Pass])]
+>>> def a(x=0,): pass
+Suite[Def(a, [x=Lit(0)], Suite[Pass])]
+>>> def a(x, y=1): pass
+Suite[Def(a, [x, y=Lit(1)], Suite[Pass])]
+>>> def a(x, y=1,): pass
+Suite[Def(a, [x, y=Lit(1)], Suite[Pass])]
+>>> def a(x=0, y=1): pass
+Suite[Def(a, [x=Lit(0), y=Lit(1)], Suite[Pass])]
+>>> def a(x=0, y=1,): pass
+Suite[Def(a, [x=Lit(0), y=Lit(1)], Suite[Pass])]
+>>> def a(x=0, y): pass
+SyntaxError
+
+>>> def a(*x): pass
+Suite[Def(a, [*x], Suite[Pass])]
+>>> def a(**y): pass
+Suite[Def(a, [**y], Suite[Pass])]
+>>> def a(*x): pass
+Suite[Def(a, [*x], Suite[Pass])]
+>>> def a(*x, **y): pass
+Suite[Def(a, [*x, **y], Suite[Pass])]
+>>> def a(*x, *y): pass
+SyntaxError
+>>> def a(**x, **y): pass
+SyntaxError
+>>> def a(**x, *y): pass
+SyntaxError
+>>> def a(*x=0): pass
+SyntaxError
+>>> def a(**x=0): pass
+SyntaxError
+
+>>> def a(x, *y): pass
+Suite[Def(a, [x, *y], Suite[Pass])]
+>>> def a(x, y, *z): pass
+Suite[Def(a, [x, y, *z], Suite[Pass])]
+>>> def a(x, *y, **z): pass
+Suite[Def(a, [x, *y, **z], Suite[Pass])]
+>>> def a(x, y=0, *z): pass
+Suite[Def(a, [x, y=Lit(0), *z], Suite[Pass])]
+>>> def a(x=0, y=0, *z): pass
+Suite[Def(a, [x=Lit(0), y=Lit(0), *z], Suite[Pass])]
+
+# TODO support bare "*"
+# >>> def a(*): pass
+# SyntaxError
+# >>> def a(*, a): pass
+# Suite[Def(a, [*, a], Suite[Pass])]
+
+>>> def a(x:int, y:int=0, *z:str) -> str: pass
+Suite[Def(a, [x:Var(int), y:Var(int)=Lit(0), *z:Var(str)]:Var(str), Suite[Pass])]

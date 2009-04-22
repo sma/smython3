@@ -8,6 +8,8 @@ import sma.smython.Python.*;
 import java.util.List;
 import java.util.ArrayList;
 
+// TODO support bare "*"
+
 /** Presents the (optionall typed) arguments list of functions and lambda expressions. */
 class Params {
   final List<Param> params = new ArrayList<Param>();
@@ -58,7 +60,7 @@ class Params {
       }
       s += "**" + restKeyword;
     }
-    return s + "]";
+    return s + "]" + (returnType == null ? "" : ":" + returnType);
   }
 
   static class Param {

@@ -435,19 +435,32 @@ public class Parser {
 
   private Params parseArgsList(boolean typed) {
     Params params = new Params();
+    boolean kwseen = false;
     while (true) {
       if (is("NAME")) {
-        params.add(parseParam(typed, true));
+        Params.Param param = parseParam(typed, true);
+        if (kwseen) {
+          if (param.init == null) {
+            throw new ParserException();
+          }
+        } else {
+          kwseen = param.init != null;
+        }
+        params.add(param);
       } else if (at("*")) {
-        if (params.restPositional != null) {
+        if (params.restPositional != null || params.restKeyword != null) {
           throw new ParserException();
         }
         if (is("NAME")) {
           params.restPositional = parseParam(typed, false);
         } else {
           params.restPositional = new Params.Param(null, null, null);
+          throw new UnsupportedOperationException();
         }
       } else if (at("**")) {
+        if (params.restKeyword != null) {
+          throw new ParserException();
+        }
         params.restKeyword = parseParam(typed, false);
       } else {
         break;
@@ -455,6 +468,9 @@ public class Parser {
       if (!at(",")) {
         break;
       }
+    }
+    if (params.params.size() > 0 && params.params.get(params.params.size() - 1).name == null) {
+      throw new ParserException();
     }
     return params;
   }
