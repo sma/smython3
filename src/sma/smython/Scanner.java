@@ -268,6 +268,10 @@ public class Scanner {
       case '[':
         level += 1;
         return "[";
+      case '\\':
+        if (get() == '\n') {
+          return next();
+        }
       case ']':
         level -= 1;
         return "]";
