@@ -195,3 +195,27 @@ Suite[Expr[Lit(1), Lit(0), Lit(None), Lit(Ellipsis)]]
 Suite[Expr[Lit(1), Lit('a'), Lit('b')]]
 >>> 2, "a" 'b' """c"""
 Suite[Expr[Lit(2), Lit('abc')]]
+
+# lists
+>>> []
+Suite[Expr(ListConstr[])]
+>>> [1]
+Suite[Expr(ListConstr[Lit(1)])]
+>>> [1,]
+Suite[Expr(ListConstr[Lit(1)])]
+>>> [1, 2]
+Suite[Expr(ListConstr[Lit(1), Lit(2)])]
+>>> [1, 2,]
+Suite[Expr(ListConstr[Lit(1), Lit(2)])]
+>>> [a*a for a in items]
+Suite[Expr(ListCompr(Mul(Var(a), Var(a)) for [Var(a)] in Var(items)))]
+>>> [a*a for a in items if 1]
+Suite[Expr(ListCompr(Mul(Var(a), Var(a)) for [Var(a)] in Var(items) if Lit(1)))]
+>>> [for a in b]
+SyntaxError
+>>> [a for a]
+SyntaxError
+>>> [a for a if b]
+SyntaxError
+>>> [a for a in 1, 2, 3]
+SyntaxError

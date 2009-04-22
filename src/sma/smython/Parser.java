@@ -870,6 +870,9 @@ public class Parser {
   // testlist_comp: test ( comp_for | (',' test)* [','] )
   Expr parseTestListComp() {
     Expr t = parseTest();
+    if (t == null) {
+      return new Expr.ListConstr(new ExprList());
+    }
     if (at("for")) {
       return new Expr.ListCompr(t, parseCompFor(null));
     }
