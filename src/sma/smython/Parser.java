@@ -469,9 +469,6 @@ public class Parser {
         break;
       }
     }
-    if (params.params.size() > 0 && params.params.get(params.params.size() - 1).name == null) {
-      throw new ParserException();
-    }
     return params;
   }
 
