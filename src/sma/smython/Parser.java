@@ -529,9 +529,7 @@ public class Parser {
   Expr parseTest() {
     if (at("lambda")) {
       // lambdef: 'lambda' [varargslist] ':' test
-      Params params = parseVarArgsList();
-      expect(":");
-      return new Expr.Lambda(params, parseTest());
+      return new Expr.Lambda(parseLambdaVarargsList(), parseTest());
     }
     Expr expr = parseOrTest();
     if (at("if")) {
@@ -953,7 +951,7 @@ public class Parser {
   }
 
   Params parseLambdaVarargsList() {
-    Params params = is("NAME") ? parseVarArgsList() : null;
+    Params params = parseVarArgsList();
     expect(":");
     return params;
   }

@@ -277,6 +277,8 @@ SyntaxError
 Suite[Expr(ListCompr(Add(Var(a), Var(b)) for [Var(a)] in Var(items1) for [Var(b)] in Var(items2)))]
 >>> {a for a in items if 1 if 2}
 Suite[Expr(SetCompr(Var(a) for [Var(a)] in Var(items) if Lit(1) if Lit(2)))]
+>>> (a for a in items if lambda: 2)
+Suite[Expr(GeneratorCompr(Var(a) for [Var(a)] in Var(items) if Lambda([], Lit(2))))]
 
 # yield expression
 >>> (yield), (yield 1), (yield 1,), (yield 1, 2,)
