@@ -87,3 +87,11 @@ SyntaxError
 Suite[Expr(Comparison(Var(a) is Var(b)))]
 >>> a is not b
 Suite[Expr(Comparison(Var(a) is not Var(b)))]
+
+# star expression
+>>> *a, b = 1, 2, 3
+Suite[Assign([Star(Var(a)), Var(b)], [Lit(1), Lit(2), Lit(3)])]
+# >>> *a
+# SyntaxError
+# >>> *a = 1, 2
+# SyntaxError

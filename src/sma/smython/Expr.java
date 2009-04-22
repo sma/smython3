@@ -265,6 +265,11 @@ abstract class Expr {
     Obj eval(Frame f) {
       throw new UnsupportedOperationException();
     }
+
+    @Override
+    public String toString() {
+      return "Star(" + expr + ")";
+    }
   }
 
   static class BitOr extends Expr {
