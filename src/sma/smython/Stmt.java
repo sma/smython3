@@ -715,7 +715,7 @@ abstract class Stmt {
 
     @Override
     public String toString() {
-      String s = "Class(" + name + ", " + body;
+      String s = "Class(" + name + ", " + arglist + ", " + body;
       if (decorators != null) {
         s += ", " + decorators;
       }

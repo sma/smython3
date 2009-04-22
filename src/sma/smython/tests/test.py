@@ -564,3 +564,51 @@ Suite[Def(a, [x=Lit(0), y=Lit(0), *z], Suite[Pass])]
 
 >>> def a(x:int, y:int=0, *z:str) -> str: pass
 Suite[Def(a, [x:Var(int), y:Var(int)=Lit(0), *z:Var(str)]:Var(str), Suite[Pass])]
+
+# class statement (body suite alternations)
+>>> class A: pass
+Suite[Class(A, [], Suite[Pass])]
+>>> class A:
+...   pass
+Suite[Class(A, [], Suite[Pass])]
+>>> class A: pass; pass
+Suite[Class(A, [], Suite[Pass, Pass])]
+>>> class A:
+...   pass; pass
+Suite[Class(A, [], Suite[Pass, Pass])]
+>>> class A:
+...   pass
+...   pass
+Suite[Class(A, [], Suite[Pass, Pass])]
+
+# decorated class statement
+>>> @deco
+... class A: pass
+Suite[Class(A, [], Suite[Pass], [@deco])]
+>>> @deco1
+... @deco2
+... class A: pass
+Suite[Class(A, [], Suite[Pass], [@deco1, @deco2])]
+>>> @deco(1, 2)
+... class A: pass
+Suite[Class(A, [], Suite[Pass], [@deco[Lit(1), Lit(2)]])]
+
+# class statement (argument alternations)
+>>> class A(): pass
+Suite[Class(A, [], Suite[Pass])]
+>>> class A(object): pass
+Suite[Class(A, [Var(object)], Suite[Pass])]
+>>> class A(object,): pass
+Suite[Class(A, [Var(object)], Suite[Pass])]
+>>> class A(object,): pass
+Suite[Class(A, [Var(object)], Suite[Pass])]
+>>> class A(int, str): pass
+Suite[Class(A, [Var(int), Var(str)], Suite[Pass])]
+>>> class A(int, str,): pass
+Suite[Class(A, [Var(int), Var(str)], Suite[Pass])]
+>>> class A(metaclass=type): pass
+Suite[Class(A, [metaclass=Var(type)], Suite[Pass])]
+>>> class A(metaclass=type,): pass
+Suite[Class(A, [metaclass=Var(type)], Suite[Pass])]
+>>> class A(object, metaclass=type,): pass
+Suite[Class(A, [Var(object), metaclass=Var(type)], Suite[Pass])]

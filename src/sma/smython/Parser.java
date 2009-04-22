@@ -482,10 +482,12 @@ public class Parser {
   // classdef: 'class' NAME ['(' [arglist] ')'] ':' suite
   Stmt.ClassDef parseClassDef() {
     String name = parseName();
-    Arglist arglist = null;
+    Arglist arglist;
     if (at("(")) {
       arglist = parseArglist();
       expect(")");
+    } else {
+      arglist = new Arglist();
     }
     expect(":");
     return new Stmt.ClassDef(name, arglist, parseSuite());
