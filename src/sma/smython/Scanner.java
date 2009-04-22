@@ -10,66 +10,102 @@ import java.util.Arrays;
 // TODO string escapes, multiline strings
 // TODO floats
 // TODO line continuations
-// TODO comments
 public class Scanner {
   private static final Set<String> keywords = new HashSet<String>(Arrays.asList((
       "and as assert break class continue def del elif else except finally for from global if import in is " +
       "lambda nonlocal not or pass raise return try while with yield None True False").split(" ")));
   private final String source;
-  private int index;
+  private int index; // index to "source"
   private int level; // 0 = no open ([{, 1+ = some open ([{
   private int[] indents = new int[32];
-  private int indent;
-  private int mode; // 0 = beginning of line, 1 = inside line
+  private int indent; // point behind the last indentation in "indents"
+  private int dedent; // target indentation while dedenting
+  private boolean beginOfLine = true;
   private Object value;
 
+  /**
+   * Constructs a new scanner for the given source.
+   * Call <code>next()</code> to generate the token.
+   */
   public Scanner(String source) {
     this.source = source;
   }
 
-  /** Returns the next char from the source or <code>0</code> if no more characters are available. */
+  /**
+   * Returns the next char from the source or <code>0</code> if no more characters are available.
+   */
   private char get() {
     return index++ < source.length() ? source.charAt(index - 1) : 0;
   }
 
-  /** Returns the next token. For NUM and STR, call <code>value()</code> to get the actual value. */
+  /**
+   * Returns the next token. END marks the end of the source.
+   * For NUM, STR and NAME, call <code>value()</code> to get the actual value.
+   */
   public String next() {
+    // if we're currently dedenting and haven't reached the final indentation level, continue to dedent
+    if (indent > 0 && indents[indent - 1] > dedent) {
+      indent -= 1;
+      return "DEDENT";
+    }
+
+    // skip white spaces and count them if at the begin of a logical line
     int ci = 0; // tracks the current line's indent
     char ch = get();
-    while (Character.isWhitespace(ch)) {
-      if (ch == '\n') {
-        mode = 0; // with the next char, we're at the beginning of a line
-        if (level == 0) {
-          return "NEWLINE";
+    while (Character.isWhitespace(ch) || ch == '#') {
+      if (level == 0) {
+        if (ch == '\t') throw new RuntimeException("TAB"); // TODO
+        if (ch == '\n') {
+          if (!beginOfLine) {
+            beginOfLine= true; // with the next char, we're at the beginning of a line
+            return "NEWLINE";
+          }
+          ci = 0; // reset current line's indent
+        } else if (ch == '#') {
+          while (ch != 0 && ch != '\n') {
+            ch = get();
+          }
+          continue;
+        } else if (beginOfLine) {
+          ci += 1; // only track the indent at the beginning of a line
         }
-        ci = 0; // reset current line's indent
-      } else if (mode == 0) {
-        ci += 1; // only track the indent at the beginning of a line
+      } else if (ch == '#') {
+        while (ch != 0 && ch != '\n') {
+          ch = get();
+        }
+        continue;
       }
       ch = get();
     }
+
     if (ch == 0) {
       // end of source, still some DEDENTs to do?
+      dedent = 0;
       if (indent > 0) {
         indent -= 1;
         return "DEDENT";
       }
       return "END"; // signal end of source
     }
-    if (mode == 0) {
-      mode = 1; // with the next char, we aren't at the beginning of a line anymore
+
+    if (beginOfLine && level == 0) {
+      beginOfLine = false; // with the next char, we aren't at the beginning of a line anymore
       int li = indent > 0 ? indents[indent - 1] : 0; // last indent
       if (ci > li) {
+        dedent = ci;
         indents[indent++] = ci;
         index -= 1;
         return "INDENT";
       }
       if (ci < li) {
+        dedent = ci;
         indent -= 1;
-        index -=  1;
+        index -= 1;
         return "DEDENT";
       }
     }
+
+    // now dispatch based on the character read
     switch (ch) {
       case '!':
         if (get() == '=') {
@@ -332,5 +368,15 @@ public class Scanner {
 
   public Object value() {
     return value;
+  }
+
+  public int line() {
+    int line = 1;
+    for (int i = 0; i < index; i++) {
+      if (source.charAt(i) == '\n') {
+        line += 1;
+      }
+    }
+    return line;
   }
 }

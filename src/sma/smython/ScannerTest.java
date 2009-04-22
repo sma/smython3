@@ -36,7 +36,17 @@ public class ScannerTest {
 
   @Test
   public void parentheses() {
-    assertEquals("( ) NEWLINE ", scan("(\n)\n"));
+    assertEquals("( ) ", scan("(\n)"));
+    assertEquals("[ ] ", scan("[\n]"));
+    assertEquals("{ } ", scan("{\n}"));
+  }
+
+  @Test
+  public void moreParentheses() {
+    assertEquals("{ NUM NUM } ", scan("{1\n  2\n}"));
+    assertEquals(
+        ": NEWLINE INDENT { NUM NUM } NEWLINE NUM DEDENT ",
+        scan(":\n  {1\n  2\n}\n  3"));
   }
 
   @Test
@@ -88,6 +98,21 @@ public class ScannerTest {
   @Test
   public void exoticNumber() {
     assertEquals("NUM ", scan("\u0664\u06F2")); // arabic
+  }
+
+  @Test
+  public void newlines() {
+    assertEquals("", scan("\n\n")); 
+    assertEquals("NUM NEWLINE ", scan("1\n"));
+    assertEquals("NUM NEWLINE NUM ", scan("1\n\n2"));
+  }
+
+  @Test
+  public void comments() {
+    assertEquals("", scan("# just a comment\n"));
+    assertEquals("NUM NEWLINE NUM ", scan("1 #\n2"));
+    assertEquals("INDENT NAME«a» NEWLINE NAME«b» NEWLINE DEDENT ", scan("\n  a\n  #\n  b\n"));
+    assertEquals("INDENT NAME«a» NEWLINE NAME«b» NEWLINE DEDENT ", scan("\n  a\n#\n  b\n"));
   }
 
   @Test(expected = RuntimeException.class)
