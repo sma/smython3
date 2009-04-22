@@ -749,10 +749,12 @@ public class Parser {
   //       NAME | NUMBER | STRING+ | '...' | 'None' | 'True' | 'False')
   Expr parseAtom() {
     if (at("(")) {
+      Expr expr;
       if (at("yield")) {
-        return parseYieldExpr();
+        expr = parseYieldExpr();
+      } else {
+        expr = parseTestListComp();    //TODO should generate tuple, not list
       }
-      Expr expr = parseTestListComp();    //TODO should generate tuple, not list
       expect(")");
       return expr;
     } else if (at("[")) {

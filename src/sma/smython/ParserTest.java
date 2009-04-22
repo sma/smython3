@@ -71,6 +71,11 @@ public class ParserTest {
   }
 
   @Test
+  public void parseYieldExpr() {
+    assertEquals("Suite[Expr(Yield(Lit(None)))]", parse("(yield)\n"));
+  }
+
+  @Test
   public void parseFromTestsPy() throws IOException {
     testFile("Tests.py");
   }
