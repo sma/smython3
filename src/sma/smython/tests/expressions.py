@@ -279,3 +279,27 @@ Suite[Expr(SetCompr(Var(a) for [Var(a)] in Var(items) if Lit(1) if Lit(2)))]
 # yield expression
 >>> (yield), (yield 1), (yield 1,), (yield 1, 2,)
 Suite[Expr[Yield(Lit(None)), Yield(Lit(1)), Yield[Lit(1)], Yield[Lit(1), Lit(2)]]]
+
+# tuples
+>>> (1)
+Suite[Expr(Lit(1))]
+>>> (1,)
+Suite[Expr(TupleConstr[Lit(1)])]
+>>> (1, 2)
+Suite[Expr(TupleConstr[Lit(1), Lit(2)])]
+>>> (1, 2,)
+Suite[Expr(TupleConstr[Lit(1), Lit(2)])]
+
+# generators
+>>> (a+1 for a in items)
+Suite[Expr(GeneratorCompr(Add(Var(a), Lit(1)) for [Var(a)] in Var(items)))]
+>>> (a+1 for a in items if 1)
+Suite[Expr(GeneratorCompr(Add(Var(a), Lit(1)) for [Var(a)] in Var(items) if Lit(1)))]
+>>> (for a in b)
+SyntaxError
+>>> (a for a)
+SyntaxError
+>>> (a for a if b)
+SyntaxError
+>>> (a for a in 1, 2, 3)
+SyntaxError

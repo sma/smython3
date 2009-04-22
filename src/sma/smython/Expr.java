@@ -819,6 +819,28 @@ abstract class Expr {
     Obj eval(Frame f) {
       throw new UnsupportedOperationException(); // TODO create a generator type
     }
+
+    @Override
+    public String toString() {
+      return "GeneratorCompr(" + expr + compr + ")";
+    }
+  }
+
+  static class TupleConstr extends Expr {
+    final ExprList exprList;
+
+    TupleConstr(ExprList exprList) {
+      this.exprList = exprList;
+    }
+
+    Obj eval(Frame f) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String toString() {
+      return "TupleConstr" + exprList;
+    }
   }
 
   static class Slice extends Expr {

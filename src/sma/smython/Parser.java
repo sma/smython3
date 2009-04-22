@@ -749,12 +749,7 @@ public class Parser {
   //       NAME | NUMBER | STRING+ | '...' | 'None' | 'True' | 'False')
   Expr parseAtom() {
     if (at("(")) {
-      Expr expr;
-      if (at("yield")) {
-        expr = parseYieldExpr();
-      } else {
-        expr = parseTestListComp();    //TODO should generate tuple, not list
-      }
+      Expr expr = parseYieldOrTupleOrGenerator();
       expect(")");
       return expr;
     } else if (at("[")) {
@@ -879,6 +874,33 @@ public class Parser {
   // yield_expr: 'yield' [testlist]
   Expr parseYieldExpr() {
     return new Expr.Yield(parseOptionalTestList());
+  }
+
+  // [yield_expr|testlist_comp]
+  Expr parseYieldOrTupleOrGenerator() {
+    if (at("yield")) {
+      return parseYieldExpr();
+    }
+    //
+    Expr t = parseTest();
+    if (t == null) {
+      return new Expr.Lit(new Python.Tuple());
+    }
+    if (at("for")) {
+      return new Expr.GeneratorCompr(t, parseCompFor(null));
+    }
+    if (is(")")) {
+      return t;
+    }
+    ExprList testList = new ExprList();
+    testList.add(t);
+    while (at(",")) {
+      if (is(")")) {
+        break;
+      }
+      testList.add(parseTest());
+    }
+    return new Expr.TupleConstr(testList);
   }
 
   // testlist_comp: test ( comp_for | (',' test)* [','] )

@@ -352,4 +352,10 @@ public class Python {
     }
   }
 
+  static class Tuple extends Obj {
+    @Override
+    public String toString() {
+      return "()"; // TODO
+    }
+  }
 }
