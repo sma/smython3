@@ -74,6 +74,11 @@ abstract class Expr {
       Obj result = left.eval(f);
       return result.truish() ? right.eval(f) : result;
     }
+
+    @Override
+    public String toString() {
+      return "And(" + left + ", " + right + ")";
+    }
   }
 
   static class Or extends Expr {
@@ -89,6 +94,11 @@ abstract class Expr {
       Obj result = left.eval(f);
       return result.truish() ? result : right.eval(f);
     }
+
+    @Override
+    public String toString() {
+      return "Or(" + left + ", " + right + ")";
+    }
   }
 
   static class Not extends Expr {
@@ -100,6 +110,11 @@ abstract class Expr {
 
     Obj eval(Frame f) {
       return Python.bool(test.eval(f).truish());
+    }
+
+    @Override
+    public String toString() {
+      return "Not(" + test + ")";
     }
   }
 

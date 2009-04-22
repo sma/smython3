@@ -33,3 +33,21 @@ Suite[Expr(Lambda([a, b=Lit(0), *c, **d], Lit(1)))]
 Suite[Expr(IfElse(Var(a), Lit(2), Lit(1)))]
 >>> 2 if a
 SyntaxError
+
+# logical expressions
+>>> a or b
+Suite[Expr(Or(Var(a), Var(b)))]
+>>> a or b or c
+Suite[Expr(Or(Or(Var(a), Var(b)), Var(c)))]
+>>> a and b
+Suite[Expr(And(Var(a), Var(b)))]
+>>> a and b and c
+Suite[Expr(And(And(Var(a), Var(b)), Var(c)))]
+>>> not a
+Suite[Expr(Not(Var(a)))]
+>>> not not a
+Suite[Expr(Not(Not(Var(a))))]
+>>> a and not b or not b and c
+Suite[Expr(Or(And(Var(a), Not(Var(b))), And(Not(Var(b)), Var(c))))]
+>>> a or b and not b or c
+Suite[Expr(Or(Or(Var(a), And(Var(b), Not(Var(b)))), Var(c)))]
