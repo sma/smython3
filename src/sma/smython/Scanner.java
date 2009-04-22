@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Arrays;
 
-// TODO string escapes, multiline strings
+// TODO string escapes, bytes strings
 // TODO floats
 // TODO line continuations
 public class Scanner {
@@ -332,9 +332,28 @@ public class Scanner {
   private String parseString(char q) {
     StringBuilder b = new StringBuilder(256);
     char ch = get();
-    while (ch != q) {
-      b.append(ch);
+    if (ch == q && get() == q) {
+      // tripple quote
       ch = get();
+      while (true) {
+        if (ch == q) {
+          if (get() == q) {
+            if (get() == q) {
+              break;
+            }
+            index -= 1;
+          }
+          index -= 1;
+        }
+        b.append(ch);
+        ch = get();
+      }
+    } else {
+      index -= 1;
+      while (ch != q) {
+        b.append(ch);
+        ch = get();
+      }
     }
     value = b.toString();
     return "STR";

@@ -119,4 +119,10 @@ public class ScannerTest {
   public void invalid() {
     scan("!");
   }
+
+  @Test
+  public void multilineString() {
+    assertEquals("STR ", scan("'''a'a''a'''"));
+    assertEquals("STR ", scan("\"\"\"a\"a\"\"a\"\"\""));
+  }
 }
