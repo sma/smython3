@@ -1,3 +1,5 @@
+# Copyright (c) 2009, Stefan Matthias Aust. All rights reserved.
+
 # lambda expression
 >>> lambda: 1
 Suite[Expr(Lambda([], Lit(1)))]
