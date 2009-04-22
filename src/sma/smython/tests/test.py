@@ -294,3 +294,56 @@ Suite[While(Lit(1), Suite[Pass], Suite[Pass, Pass])]
 ...   pass
 ...   pass
 Suite[While(Lit(1), Suite[Pass], Suite[Pass, Pass])]
+
+# for statement (single items)
+>>> for a in items: pass
+Suite[For([Var(a)], (Var(items)), Suite[Pass])]
+>>> for a, in items: pass
+Suite[For([Var(a)], (Var(items)), Suite[Pass])]
+>>> for a, b in items: pass
+Suite[For([Var(a), Var(b)], (Var(items)), Suite[Pass])]
+>>> for a, b, in items: pass
+Suite[For([Var(a), Var(b)], (Var(items)), Suite[Pass])]
+
+# for statement (multiple items)
+>>> for a in 1,: pass
+Suite[For([Var(a)], [Lit(1)], Suite[Pass])]
+>>> for a in 1, 2: pass
+Suite[For([Var(a)], [Lit(1), Lit(2)], Suite[Pass])]
+>>> for a in 1, 2,: pass
+Suite[For([Var(a)], [Lit(1), Lit(2)], Suite[Pass])]
+
+# for statement (suite alterations)
+>>> for a in items:
+...   pass
+Suite[For([Var(a)], (Var(items)), Suite[Pass])]
+>>> for a in items: pass; break
+Suite[For([Var(a)], (Var(items)), Suite[Pass, Break])]
+>>> for a in items:
+...   pass; break
+Suite[For([Var(a)], (Var(items)), Suite[Pass, Break])]
+>>> for a in items:
+...   pass
+...   break
+Suite[For([Var(a)], (Var(items)), Suite[Pass, Break])]
+
+# for/else statement
+>>> for a in items: pass
+... else: pass
+Suite[For([Var(a)], (Var(items)), Suite[Pass], Suite[Pass])]
+>>> for a in items: pass
+... else:
+...   pass
+Suite[For([Var(a)], (Var(items)), Suite[Pass], Suite[Pass])]
+>>> for a in items: pass
+... else: pass; pass
+Suite[For([Var(a)], (Var(items)), Suite[Pass], Suite[Pass, Pass])]
+>>> for a in items: pass
+... else:
+...   pass; pass
+Suite[For([Var(a)], (Var(items)), Suite[Pass], Suite[Pass, Pass])]
+>>> for a in items: pass
+... else:
+...   pass
+...   pass
+Suite[For([Var(a)], (Var(items)), Suite[Pass], Suite[Pass, Pass])]

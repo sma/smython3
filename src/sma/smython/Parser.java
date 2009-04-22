@@ -276,7 +276,7 @@ public class Parser {
       // for_stmt: 'for' exprlist 'in' testlist ':' suite ['else' ':' suite]
       ExprList names = parseExprList();
       expect("in");
-      ExprList items = parseExprList();
+      ExprList items = parseExprList(true);
       expect(":");
       Suite bodySuite = parseSuite();
       Suite elseSuite = null;

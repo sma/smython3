@@ -554,7 +554,7 @@ abstract class Stmt {
 
     @Override
     public String toString() {
-      return "For(" + names + ", " + items + (elseSuite == null ? "" : ", " + elseSuite) + ")";
+      return "For(" + names + ", " + items + ", " + bodySuite + (elseSuite == null ? "" : ", " + elseSuite) + ")";
     }
   }
 
