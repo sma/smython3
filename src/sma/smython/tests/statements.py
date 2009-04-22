@@ -201,9 +201,8 @@ Suite[Assign((Var(a)), (Yield[Lit(1)]))]
 Suite[Assign((Var(a)), (Yield[Lit(1), Lit(2)]))]
 >>> a = yield 1, 2,
 Suite[Assign((Var(a)), (Yield[Lit(1), Lit(2)]))]
-#TODO make this work
-#>>> a = b, (yield 1), c
-#Suite[Assign(Var(a), [Var(b), Yield(Lit(1)), Var(c)])]
+>>> a = b, (yield 1), c
+Suite[Assign((Var(a)), [Var(b), Yield(Lit(1)), Var(c)])]
 
 # statement expression
 >>> print
