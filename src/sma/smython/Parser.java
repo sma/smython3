@@ -1017,8 +1017,14 @@ public class Parser {
     Arglist arglist = new Arglist();
     while (true) {
       if (at("*")) {
+        if (arglist.restPositionals != null || arglist.restKeywords != null) {
+          throw new ParserException();
+        }
         arglist.setRestPositionals(parseTest());
       } else if (at("**")) {
+        if (arglist.restKeywords != null) {
+          throw new ParserException();
+        }
         arglist.setRestKeywords(parseTest());
       } else {
         if (is(",") || is(")")) {
@@ -1042,7 +1048,11 @@ public class Parser {
       if (!(test instanceof Expr.Var)) {
         throw new ParserException();
       }
-      arglist.addKeyword(((Expr.Var) test).name, parseTest());
+      Expr value = parseTest();
+      if (value == null) {
+        throw new ParserException();
+      }
+      arglist.addKeyword(((Expr.Var) test).name, value);
     } else {
       arglist.addPositional(test);
     }

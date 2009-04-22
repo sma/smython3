@@ -357,3 +357,58 @@ Suite[Expr(Attr(Var(a), b))]
 Suite[Expr(Attr(Attr(Var(a), b), c))]
 >>> a.b = 1
 Suite[Assign((Attr(Var(a), b)), (Lit(1)))]
+
+# function calls
+>>> a()
+Suite[Expr(Call(Var(a), []))]
+>>> a()()
+Suite[Expr(Call(Call(Var(a), []), []))]
+>>> (a)()()
+Suite[Expr(Call(Call(Var(a), []), []))]
+>>> (a+1)()()
+Suite[Expr(Call(Call(Add(Var(a), Lit(1)), []), []))]
+>>> a[1]()()
+Suite[Expr(Call(Call(Index(Var(a), [Lit(1)]), []), []))]
+>>> (a.b())()
+Suite[Expr(Call(Call(Attr(Var(a), b), []), []))]
+
+>>> a(1)
+Suite[Expr(Call(Var(a), [Lit(1)]))]
+>>> a(1,)
+Suite[Expr(Call(Var(a), [Lit(1)]))]
+>>> a(1, 2)
+Suite[Expr(Call(Var(a), [Lit(1), Lit(2)]))]
+>>> a(1, 2,)
+Suite[Expr(Call(Var(a), [Lit(1), Lit(2)]))]
+>>> a(x=2)
+Suite[Expr(Call(Var(a), [x=Lit(2)]))]
+>>> a(x=2,)
+Suite[Expr(Call(Var(a), [x=Lit(2)]))]
+>>> a(x=2, y=3)
+Suite[Expr(Call(Var(a), [x=Lit(2), y=Lit(3)]))]
+>>> a(x=2, y=3,)
+Suite[Expr(Call(Var(a), [x=Lit(2), y=Lit(3)]))]
+>>> a(x, y=3)
+Suite[Expr(Call(Var(a), [Var(x), y=Lit(3)]))]
+>>> a(x, y=3,)
+Suite[Expr(Call(Var(a), [Var(x), y=Lit(3)]))]
+>>> a(*x)
+Suite[Expr(Call(Var(a), [*Var(x)]))]
+>>> a(**x)
+Suite[Expr(Call(Var(a), [**Var(x)]))]
+>>> a(*x, **y)
+Suite[Expr(Call(Var(a), [*Var(x), **Var(y)]))]
+
+>>> a(x, x+1 for x in items)
+Suite[Expr(Call(Var(a), [Var(x), GeneratorCompr(Add(Var(x), Lit(1)) for [Var(x)] in Var(items))]))]
+
+>>> a([a]=1)
+SyntaxError
+>>> a(a=, b=1)
+SyntaxError
+>>> a(*a, *b)
+SyntaxError
+>>> a(**a, **b)
+SyntaxError
+>>> a(**a, *b)
+SyntaxError

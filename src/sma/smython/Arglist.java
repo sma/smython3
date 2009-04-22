@@ -13,8 +13,8 @@ import java.util.List;
 class Arglist {
   private final List<Expr> positionals = new ArrayList<Expr>();
   private final List<KwExpr> keywords = new ArrayList<KwExpr>();
-  private Expr restPositionals;
-  private Expr restKeywords;
+  Expr restPositionals;
+  Expr restKeywords;
 
   void addPositional(Expr value) {
     positionals.add(value);
