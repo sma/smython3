@@ -193,3 +193,67 @@ Suite[Expr[Var(print)]]
 Suite[Expr[Var(print), Lit(1)]]
 >>> print, 2,
 Suite[Expr[Var(print), Lit(2)]]
+
+# if statement
+>>> if 1: pass
+Suite[If(Lit(1), Suite[Pass], Suite[Pass])]
+>>> if 1: pass; pass
+Suite[If(Lit(1), Suite[Pass, Pass], Suite[Pass])]
+>>> if 1:
+...   pass
+Suite[If(Lit(1), Suite[Pass], Suite[Pass])]
+>>> if 1:
+...   pass; pass
+Suite[If(Lit(1), Suite[Pass, Pass], Suite[Pass])]
+>>> if 1:
+...   pass
+...   pass
+Suite[If(Lit(1), Suite[Pass, Pass], Suite[Pass])]
+
+# if/else statement
+>>> if 1: pass
+... else: pass
+Suite[If(Lit(1), Suite[Pass], Suite[Pass])]
+>>> if 1: pass
+... else: pass; pass
+Suite[If(Lit(1), Suite[Pass], Suite[Pass, Pass])]
+>>> if 1: pass
+... else:
+...   pass
+Suite[If(Lit(1), Suite[Pass], Suite[Pass])]
+>>> if 1: pass
+... else:
+...   pass; pass
+Suite[If(Lit(1), Suite[Pass], Suite[Pass, Pass])]
+>>> if 1: pass
+... else:
+...   pass
+...   pass
+Suite[If(Lit(1), Suite[Pass], Suite[Pass, Pass])]
+
+# if/elif statement
+>>> if 1: pass
+... elif 2: pass
+Suite[If(Lit(1), Suite[Pass], Suite[If(Lit(2), Suite[Pass], Suite[Pass])])]
+>>> if 1: pass
+... elif 2: pass; pass
+Suite[If(Lit(1), Suite[Pass], Suite[If(Lit(2), Suite[Pass, Pass], Suite[Pass])])]
+>>> if 1: pass
+... elif 2:
+...   pass
+Suite[If(Lit(1), Suite[Pass], Suite[If(Lit(2), Suite[Pass], Suite[Pass])])]
+>>> if 1: pass
+... elif 2:
+...   pass; pass
+Suite[If(Lit(1), Suite[Pass], Suite[If(Lit(2), Suite[Pass, Pass], Suite[Pass])])]
+>>> if 1: pass
+... elif 2:
+...   pass
+...   pass
+Suite[If(Lit(1), Suite[Pass], Suite[If(Lit(2), Suite[Pass, Pass], Suite[Pass])])]
+
+# if/elif/else statement
+>>> if 1: pass
+... elif 2: pass
+... else: pass
+Suite[If(Lit(1), Suite[Pass], Suite[If(Lit(2), Suite[Pass], Suite[Pass])])]

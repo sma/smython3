@@ -359,7 +359,9 @@ public class Parser {
       expect(":");
       return parseSuite();
     }
-    return null;
+    Suite suite = new Suite();
+    suite.add(new Stmt.Pass());
+    return suite;
   }
 
   // decorators: decorator+
