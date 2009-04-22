@@ -27,3 +27,9 @@ Suite[Expr(Lambda([*a, **b], Lit(1)))]
 SyntaxError
 >>> lambda a, b=0, *c, **d: 1
 Suite[Expr(Lambda([a, b=Lit(0), *c, **d], Lit(1)))]
+
+# if/else expression
+>>> 2 if a else 1
+Suite[Expr(IfElse(Var(a), Lit(2), Lit(1)))]
+>>> 2 if a
+SyntaxError

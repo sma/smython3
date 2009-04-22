@@ -54,6 +54,11 @@ abstract class Expr {
     Obj eval(Frame f) {
       return (condition.eval(f).truish() ? consequence : alternative).eval(f);
     }
+
+    @Override
+    public String toString() {
+      return "IfElse(" + condition + ", " + consequence + ", " + alternative + ")";
+    }
   }
 
   static class And extends Expr {
