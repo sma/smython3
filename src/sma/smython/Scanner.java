@@ -380,6 +380,21 @@ public class Scanner {
 
   private String parseNumber(char ch) {
     StringBuilder b = new StringBuilder(32);
+    if (ch == '0') {
+      ch = get();
+      if (ch == 'x' || ch == 'X') {
+        ch = get();
+        while (Character.isDigit(ch) || ch >= 'a' && ch <= 'f' || ch >= 'A' && ch <= 'F') {
+          b.append(ch);
+          ch = get();
+        }
+        value = Integer.valueOf(b.toString(), 16);
+        index -= 1;
+        return "NUM";
+      }
+      index -= 1;
+      ch = '0';
+    }
     while (Character.isDigit(ch)) {
       b.append(ch);
       ch = get();
