@@ -319,6 +319,9 @@ public class Parser {
     if (at("with")) {
       // with_stmt: 'with' test [ with_var ] ':' suite
       Expr expr = parseTest();
+      if (expr == null) {
+        throw new ParserException();
+      }
       Expr binding = at("as") ? parseExpr() : null;
       expect(":");
       return new Stmt.With(expr, binding, parseSuite());

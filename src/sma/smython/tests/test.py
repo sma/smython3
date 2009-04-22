@@ -459,3 +459,11 @@ Suite[Try(Suite[Pass], [Except(Lit(1), a, Suite[Pass]), Except(Lit(2), b, Suite[
 
 >>> try: pass
 SyntaxError
+
+# with statement
+>>> with a: pass
+Suite[With(Var(a), Suite[Pass])]
+>>> with a as b: pass
+Suite[With(Var(a), Var(b), Suite[Pass])]
+>>> with: pass
+SyntaxError

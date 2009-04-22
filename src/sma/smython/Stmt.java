@@ -644,6 +644,11 @@ abstract class Stmt {
         // TODO call __exit__
       }
     }
+
+    @Override
+    public String toString() {
+      return "With(" + expr + (binding == null ? "" : ", " + binding) + ", " + bodySuite + ")";
+    }
   }
 
   static class FuncDef extends Stmt {
