@@ -303,3 +303,49 @@ SyntaxError
 SyntaxError
 >>> (a for a in 1, 2, 3)
 SyntaxError
+
+# subscripts
+>>> a[1]
+Suite[Expr(Index(Var(a), [Lit(1)]))]
+>>> a[1,]
+Suite[Expr(Index(Var(a), [Lit(1)]))]
+>>> a[1, 2]
+Suite[Expr(Index(Var(a), [Lit(1), Lit(2)]))]
+>>> a[1, 2,]
+Suite[Expr(Index(Var(a), [Lit(1), Lit(2)]))]
+>>> a[0][1]
+Suite[Expr(Index(Index(Var(a), [Lit(0)]), [Lit(1)]))]
+
+>>> a[:]
+Suite[Expr(Index(Var(a), [:]))]
+>>> a[::]
+Suite[Expr(Index(Var(a), [:]))]
+>>> a[1:]
+Suite[Expr(Index(Var(a), [Lit(1):]))]
+>>> a[1::]
+Suite[Expr(Index(Var(a), [Lit(1):]))]
+>>> a[:1]
+Suite[Expr(Index(Var(a), [:Lit(1)]))]
+>>> a[:1:]
+Suite[Expr(Index(Var(a), [:Lit(1)]))]
+>>> a[::2]
+Suite[Expr(Index(Var(a), [::Lit(2)]))]
+>>> a[:1:2]
+Suite[Expr(Index(Var(a), [:Lit(1):Lit(2)]))]
+>>> a[0::2]
+Suite[Expr(Index(Var(a), [Lit(0)::Lit(2)]))]
+>>> a[0:1:2]
+Suite[Expr(Index(Var(a), [Lit(0):Lit(1):Lit(2)]))]
+>>> a[0:1]
+Suite[Expr(Index(Var(a), [Lit(0):Lit(1)]))]
+>>> a[0:1:]
+Suite[Expr(Index(Var(a), [Lit(0):Lit(1)]))]
+
+>>> a[1, 1:, :1, 1:2, 3:...]
+Suite[Expr(Index(Var(a), [Lit(1), Lit(1):, :Lit(1), Lit(1):Lit(2), Lit(3):Lit(Ellipsis)]))]
+
+# subscripts in assigments
+>>> a[0] = 1
+Suite[Assign((Index(Var(a), [Lit(0)])), (Lit(1)))]
+>>> for a[1:] in items: pass
+Suite[For([Index(Var(a), [Lit(1):])], (Var(items)), Suite[Pass])]

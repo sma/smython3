@@ -729,7 +729,7 @@ public class Parser {
       }
       if (at("[")) {
         ExprList subscriptlist = parseSubscriptList();
-        a = new Expr.GetItem(a, subscriptlist);
+        a = new Expr.Index(a, subscriptlist);
         expect("]");
         continue;
       }

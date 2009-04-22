@@ -551,11 +551,11 @@ abstract class Expr {
     }
   }
 
-  static class GetItem extends Expr {
+  static class Index extends Expr {
     final Expr obj;
     final ExprList index;
 
-    GetItem(Expr obj, ExprList index) {
+    Index(Expr obj, ExprList index) {
       this.obj = obj;
       this.index = index;
     }
@@ -566,7 +566,7 @@ abstract class Expr {
 
     @Override
     public String toString() {
-      return "GetItem(" + obj + ", " + index + ")"; 
+      return "Index(" + obj + ", " + index + ")";
     }
   }
 

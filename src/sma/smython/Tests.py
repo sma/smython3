@@ -69,7 +69,7 @@ Suite[While(Lit(1), Suite[Pass], Suite[Break])]
 ### Suite[For([Var(a), Var(b)], Var(c))]
 
 >>> a[0][1:]
-Suite[Expr(GetItem(GetItem(Var(a), [Lit(0)]), [Lit(1):]))]
+Suite[Expr(Index(Index(Var(a), [Lit(0)]), [Lit(1):]))]
 
 >>> def f(): pass
 Suite[Def(f, [], Suite[Pass])]
