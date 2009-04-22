@@ -51,3 +51,39 @@ Suite[Expr(Not(Not(Var(a))))]
 Suite[Expr(Or(And(Var(a), Not(Var(b))), And(Not(Var(b)), Var(c))))]
 >>> a or b and not b or c
 Suite[Expr(Or(Or(Var(a), And(Var(b), Not(Var(b)))), Var(c)))]
+
+# comparison expressions
+>>> a < b
+Suite[Expr(Comparison(Var(a) < Var(b)))]
+>>> a < b < c
+Suite[Expr(Comparison(Var(a) < Var(b) < Var(c)))]
+>>> a > b
+Suite[Expr(Comparison(Var(a) > Var(b)))]
+>>> a > b > c
+Suite[Expr(Comparison(Var(a) > Var(b) > Var(c)))]
+>>> a <= b
+Suite[Expr(Comparison(Var(a) <= Var(b)))]
+>>> a <= b <= c
+Suite[Expr(Comparison(Var(a) <= Var(b) <= Var(c)))]
+>>> a >= b
+Suite[Expr(Comparison(Var(a) >= Var(b)))]
+>>> a >= b >= c
+Suite[Expr(Comparison(Var(a) >= Var(b) >= Var(c)))]
+>>> a == b
+Suite[Expr(Comparison(Var(a) == Var(b)))]
+>>> a == b == c
+Suite[Expr(Comparison(Var(a) == Var(b) == Var(c)))]
+>>> a != b
+Suite[Expr(Comparison(Var(a) != Var(b)))]
+>>> a != b != c
+Suite[Expr(Comparison(Var(a) != Var(b) != Var(c)))]
+>>> a in b
+Suite[Expr(Comparison(Var(a) in Var(b)))]
+>>> a not in b
+Suite[Expr(Comparison(Var(a) not in Var(b)))]
+>>> a not b
+SyntaxError
+>>> a is b
+Suite[Expr(Comparison(Var(a) is Var(b)))]
+>>> a is not b
+Suite[Expr(Comparison(Var(a) is not Var(b)))]
