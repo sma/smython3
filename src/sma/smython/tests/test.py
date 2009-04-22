@@ -612,3 +612,8 @@ Suite[Class(A, [metaclass=Var(type)], Suite[Pass])]
 Suite[Class(A, [metaclass=Var(type)], Suite[Pass])]
 >>> class A(object, metaclass=type,): pass
 Suite[Class(A, [Var(object), metaclass=Var(type)], Suite[Pass])]
+
+# decorated statement
+>>> @deco
+... while 1: pass
+SyntaxError
