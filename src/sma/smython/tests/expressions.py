@@ -357,6 +357,10 @@ Suite[Expr(Attr(Var(a), b))]
 Suite[Expr(Attr(Attr(Var(a), b), c))]
 >>> a.b = 1
 Suite[Assign((Attr(Var(a), b)), (Lit(1)))]
+>>> a.1
+SyntaxError
+>>> a.1 = 2
+SyntaxError
 
 # function calls
 >>> a()

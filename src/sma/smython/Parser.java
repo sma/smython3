@@ -520,11 +520,9 @@ public class Parser {
   }
 
   String parseName() {
-    String name = (String) scanner.value();
-    if (at("NAME")) {
-      return name;
-    }
-    throw new ParserException("expected NAME, found " + token);
+    Object value = scanner.value();
+    expect("NAME");
+    return (String) value;
   }
 
   // ....
