@@ -284,6 +284,11 @@ abstract class Expr {
     Obj eval(Frame f) {
       return left.eval(f).or(right.eval(f));
     }
+
+    @Override
+    public String toString() {
+      return "BitOr(" + left + ", " + right + ")";
+    }
   }
 
   static class BitXor extends Expr {
@@ -297,6 +302,11 @@ abstract class Expr {
 
     Obj eval(Frame f) {
       return left.eval(f).xor(right.eval(f));
+    }
+
+    @Override
+    public String toString() {
+      return "BitXor(" + left + ", " + right + ")";
     }
   }
 
@@ -312,6 +322,11 @@ abstract class Expr {
     Obj eval(Frame f) {
       return left.eval(f).and(right.eval(f));
     }
+
+    @Override
+    public String toString() {
+      return "BitAnd(" + left + ", " + right + ")";
+    }
   }
 
   static class BitShiftLeft extends Expr {
@@ -326,6 +341,11 @@ abstract class Expr {
     Obj eval(Frame f) {
       return left.eval(f).lshift(right.eval(f));
     }
+
+    @Override
+    public String toString() {
+      return "BitShiftLeft(" + left + ", " + right + ")";
+    }
   }
 
   static class BitShiftRight extends Expr {
@@ -339,6 +359,11 @@ abstract class Expr {
 
     Obj eval(Frame f) {
       return left.eval(f).rshift(right.eval(f));
+    }
+
+    @Override
+    public String toString() {
+      return "BitShiftRight(" + left + ", " + right + ")";
     }
   }
 

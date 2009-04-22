@@ -95,3 +95,33 @@ Suite[Assign([Star(Var(a)), Var(b)], [Lit(1), Lit(2), Lit(3)])]
 # SyntaxError
 # >>> *a = 1, 2
 # SyntaxError
+
+# bit operations
+>>> a | b
+Suite[Expr(BitOr(Var(a), Var(b)))]
+>>> a | b | c
+Suite[Expr(BitOr(BitOr(Var(a), Var(b)), Var(c)))]
+>>> a ^ b
+Suite[Expr(BitXor(Var(a), Var(b)))]
+>>> a ^ b ^ c
+Suite[Expr(BitXor(BitXor(Var(a), Var(b)), Var(c)))]
+>>> a & b
+Suite[Expr(BitAnd(Var(a), Var(b)))]
+>>> a & b & c
+Suite[Expr(BitAnd(BitAnd(Var(a), Var(b)), Var(c)))]
+>>> a << b
+Suite[Expr(BitShiftLeft(Var(a), Var(b)))]
+>>> a << b << c
+Suite[Expr(BitShiftLeft(BitShiftLeft(Var(a), Var(b)), Var(c)))]
+>>> a >> b
+Suite[Expr(BitShiftRight(Var(a), Var(b)))]
+>>> a >> b >> c
+Suite[Expr(BitShiftRight(BitShiftRight(Var(a), Var(b)), Var(c)))]
+>>> a & b | c & d
+Suite[Expr(BitOr(BitAnd(Var(a), Var(b)), BitAnd(Var(c), Var(d))))]
+>>> a | b & c | d
+Suite[Expr(BitOr(BitOr(Var(a), BitAnd(Var(b), Var(c))), Var(d)))]
+>>> a << b ^ c
+Suite[Expr(BitXor(BitShiftLeft(Var(a), Var(b)), Var(c)))]
+>>> a ^ b << c
+Suite[Expr(BitXor(Var(a), BitShiftLeft(Var(b), Var(c))))]
