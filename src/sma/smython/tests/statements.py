@@ -204,6 +204,14 @@ Suite[Assign((Var(a)), (Yield[Lit(1), Lit(2)]))]
 >>> a = b, (yield 1), c
 Suite[Assign((Var(a)), [Var(b), Yield(Lit(1)), Var(c)])]
 
+# assigment with "test" expressions
+>>> a = lambda: 1
+Suite[Assign((Var(a)), (Lambda([], Lit(1))))]
+>>> a = 3 if 1 else 2
+Suite[Assign((Var(a)), (IfElse(Lit(1), Lit(3), Lit(2))))]
+>>> a = 1 or 2
+Suite[Assign((Var(a)), (Or(Lit(1), Lit(2))))]
+
 # statement expression
 >>> print
 Suite[Expr(Var(print))]

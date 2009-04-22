@@ -75,6 +75,11 @@ public class ParserTest {
   }
 
   @Test
+  public void parseAssignWithOr() {
+    assertEquals("Suite[Assign((Var(a)), (Or(Lit(1), Lit(2))))]", parse("a = 1 or 2\n"));
+  }
+
+  @Test
   public void parseFromTestsPy() throws IOException {
     testFile("Tests.py");
   }
