@@ -398,6 +398,11 @@ abstract class Expr {
     Obj eval(Frame f) {
       return left.eval(f).sub(right.eval(f));
     }
+
+    @Override
+    public String toString() {
+      return "Sub(" + left + ", " + right + ")";
+    }
   }
 
   static class Mul extends Expr {
@@ -411,6 +416,11 @@ abstract class Expr {
 
     Obj eval(Frame f) {
       return left.eval(f).mul(right.eval(f));
+    }
+
+    @Override
+    public String toString() {
+      return "Mul(" + left + ", " + right + ")";
     }
   }
 
@@ -426,6 +436,11 @@ abstract class Expr {
     Obj eval(Frame f) {
       return left.eval(f).div(right.eval(f));
     }
+
+    @Override
+    public String toString() {
+      return "Div(" + left + ", " + right + ")";
+    }
   }
 
   static class Mod extends Expr {
@@ -439,6 +454,11 @@ abstract class Expr {
 
     Obj eval(Frame f) {
       return left.eval(f).mod(right.eval(f));
+    }
+
+    @Override
+    public String toString() {
+      return "Mod(" + left + ", " + right + ")";
     }
   }
 
@@ -454,6 +474,11 @@ abstract class Expr {
     Obj eval(Frame f) {
       return left.eval(f).intDiv(right.eval(f));
     }
+
+    @Override
+    public String toString() {
+      return "IntDiv(" + left + ", " + right + ")";
+    }
   }
 
   static class UnaryMinus extends Expr {
@@ -465,6 +490,11 @@ abstract class Expr {
 
     Obj eval(Frame f) {
       return expr.eval(f).neg();
+    }
+
+    @Override
+    public String toString() {
+      return "Neg(" + expr + ")";
     }
   }
 
@@ -478,6 +508,11 @@ abstract class Expr {
     Obj eval(Frame f) {
       return expr.eval(f).pos();
     }
+
+    @Override
+    public String toString() {
+      return "Pos(" + expr + ")";
+    }
   }
 
   static class BitNeg extends Expr {
@@ -489,6 +524,11 @@ abstract class Expr {
 
     Obj eval(Frame f) {
       return expr.eval(f).invert();
+    }
+
+    @Override
+    public String toString() {
+      return "Invert(" + expr + ")";
     }
   }
 

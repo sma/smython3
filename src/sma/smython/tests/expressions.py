@@ -125,3 +125,59 @@ Suite[Expr(BitOr(BitOr(Var(a), BitAnd(Var(b), Var(c))), Var(d)))]
 Suite[Expr(BitXor(BitShiftLeft(Var(a), Var(b)), Var(c)))]
 >>> a ^ b << c
 Suite[Expr(BitXor(Var(a), BitShiftLeft(Var(b), Var(c))))]
+
+>>> ~a
+Suite[Expr(Invert(Var(a)))]
+>>> ~~a
+Suite[Expr(Invert(Invert(Var(a))))]
+>>> ~a&b
+Suite[Expr(BitAnd(Invert(Var(a)), Var(b)))]
+
+# arithmic operations
+>>> a + b
+Suite[Expr(Add(Var(a), Var(b)))]
+>>> a + b + c
+Suite[Expr(Add(Add(Var(a), Var(b)), Var(c)))]
+>>> a - b
+Suite[Expr(Sub(Var(a), Var(b)))]
+>>> a - b - c
+Suite[Expr(Sub(Sub(Var(a), Var(b)), Var(c)))]
+>>> a + b - c
+Suite[Expr(Sub(Add(Var(a), Var(b)), Var(c)))]
+
+>>> a * b
+Suite[Expr(Mul(Var(a), Var(b)))]
+>>> a * b * c
+Suite[Expr(Mul(Mul(Var(a), Var(b)), Var(c)))]
+>>> a / b
+Suite[Expr(Div(Var(a), Var(b)))]
+>>> a / b / c
+Suite[Expr(Div(Div(Var(a), Var(b)), Var(c)))]
+>>> a // b
+Suite[Expr(IntDiv(Var(a), Var(b)))]
+>>> a // b // c
+Suite[Expr(IntDiv(IntDiv(Var(a), Var(b)), Var(c)))]
+>>> a % b
+Suite[Expr(Mod(Var(a), Var(b)))]
+>>> a % b % c
+Suite[Expr(Mod(Mod(Var(a), Var(b)), Var(c)))]
+>>> a * b / c % d
+Suite[Expr(Mod(Div(Mul(Var(a), Var(b)), Var(c)), Var(d)))]
+
+>>> a + b * c
+Suite[Expr(Add(Var(a), Mul(Var(b), Var(c))))]
+>>> a / b - c
+Suite[Expr(Sub(Div(Var(a), Var(b)), Var(c)))]
+
+>>> -a
+Suite[Expr(Neg(Var(a)))]
+>>> --a
+Suite[Expr(Neg(Neg(Var(a))))]
+>>> +a
+Suite[Expr(Pos(Var(a)))]
+>>> ++a
+Suite[Expr(Pos(Pos(Var(a))))]
+>>> +-a
+Suite[Expr(Pos(Neg(Var(a))))]
+>>> -a+-b
+Suite[Expr(Add(Neg(Var(a)), Neg(Var(b))))]
