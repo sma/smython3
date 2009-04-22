@@ -77,6 +77,7 @@ public class ParserTest {
 
   @Test
   public void parsePythonTests() throws IOException {
-    testFile("tests/test.py");
+    testFile("tests/statements.py");
+    testFile("tests/expressions.py");
   }
 }

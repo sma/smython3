@@ -33,6 +33,11 @@ abstract class Expr {
       Str name = new Str("<lambda>");
       return new Func(name, params, suite, f.globals);
     }
+
+    @Override
+    public String toString() {
+      return "Lambda(" + params + ", " + test + ")";
+    }
   }
 
   static class IfElse extends Expr {
