@@ -570,17 +570,22 @@ abstract class Expr {
     }
   }
 
-  static class GetAttr extends Expr {
+  static class Attr extends Expr {
     final Expr obj;
     final String name;
 
-    GetAttr(Expr obj, String name) {
+    Attr(Expr obj, String name) {
       this.obj = obj;
       this.name = name;
     }
 
     Obj eval(Frame f) {
       return obj.eval(f).getAttr(new Str(name));
+    }
+
+    @Override
+    public String toString() {
+      return "Attr(" + obj + ", " + name + ")";
     }
   }
 

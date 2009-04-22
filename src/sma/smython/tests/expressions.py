@@ -349,3 +349,11 @@ Suite[Expr(Index(Var(a), [Lit(1), Lit(1):, :Lit(1), Lit(1):Lit(2), Lit(3):Lit(El
 Suite[Assign((Index(Var(a), [Lit(0)])), (Lit(1)))]
 >>> for a[1:] in items: pass
 Suite[For([Index(Var(a), [Lit(1):])], (Var(items)), Suite[Pass])]
+
+# attribute access
+>>> a.b
+Suite[Expr(Attr(Var(a), b))]
+>>> a.b.c
+Suite[Expr(Attr(Attr(Var(a), b), c))]
+>>> a.b = 1
+Suite[Assign((Attr(Var(a), b)), (Lit(1)))]

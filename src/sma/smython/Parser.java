@@ -734,7 +734,7 @@ public class Parser {
         continue;
       }
       if (at(".")) {
-        a = new Expr.GetAttr(a, parseName());
+        a = new Expr.Attr(a, parseName());
         continue;
       }
       break;
