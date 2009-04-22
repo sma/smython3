@@ -257,3 +257,40 @@ Suite[If(Lit(1), Suite[Pass], Suite[If(Lit(2), Suite[Pass, Pass], Suite[Pass])])
 ... elif 2: pass
 ... else: pass
 Suite[If(Lit(1), Suite[Pass], Suite[If(Lit(2), Suite[Pass], Suite[Pass])])]
+
+# while statement
+>>> while 1: pass
+Suite[While(Lit(1), Suite[Pass])]
+>>> while 1: pass; break
+Suite[While(Lit(1), Suite[Pass, Break])]
+>>> while 1:
+...   pass
+Suite[While(Lit(1), Suite[Pass])]
+>>> while 1:
+...   pass; break
+Suite[While(Lit(1), Suite[Pass, Break])]
+>>> while 1:
+...   pass
+...   break
+Suite[While(Lit(1), Suite[Pass, Break])]
+
+# while/else statement
+>>> while 1: pass
+... else: pass
+Suite[While(Lit(1), Suite[Pass], Suite[Pass])]
+>>> while 1: pass
+... else: pass; pass
+Suite[While(Lit(1), Suite[Pass], Suite[Pass, Pass])]
+>>> while 1: pass
+... else:
+...   pass
+Suite[While(Lit(1), Suite[Pass], Suite[Pass])]
+>>> while 1: pass
+... else:
+...   pass; pass
+Suite[While(Lit(1), Suite[Pass], Suite[Pass, Pass])]
+>>> while 1: pass
+... else:
+...   pass
+...   pass
+Suite[While(Lit(1), Suite[Pass], Suite[Pass, Pass])]
