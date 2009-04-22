@@ -7,9 +7,10 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Arrays;
 
-// TODO string escapes, bytes strings
-// TODO floats
+// TODO string escapes, bytes strings, raw strings
+// TODO floats, bigints
 // TODO line continuations
+// TODO hex constants
 public class Scanner {
   private static final Set<String> keywords = new HashSet<String>(Arrays.asList((
       "and as assert break class continue def del elif else except finally for from global if import in is " +
@@ -279,7 +280,14 @@ public class Scanner {
       case '_':
         return parseName(ch);
       case 'a':
+        return parseName(ch);
       case 'b':
+        ch = get();
+        if (ch == '\'' || ch == '"') {
+          return parseString(ch); // TODO return BYTES not STR
+        }
+        index -= 1;
+        return parseName('b');
       case 'c':
       case 'd':
       case 'e':
@@ -295,7 +303,14 @@ public class Scanner {
       case 'o':
       case 'p':
       case 'q':
+        return parseName(ch);
       case 'r':
+        ch = get();
+        if (ch == '\'' || ch == '"') {
+          return parseString(ch); // TODO support raw
+        }
+        index -= 1;
+        return parseName('r');
       case 's':
       case 't':
       case 'u':
