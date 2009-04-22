@@ -20,9 +20,10 @@ public class Python {
   static final RuntimeException continueException = new RuntimeException();
   static final RuntimeException returnException = new RuntimeException();
 
-  public static final Obj None = null;
+  public static final Obj None = new None();
   public static final Obj True = Int(1);
   public static final Obj False = Int(0);
+  public static final Obj Ellipsis = new Ellipsis();
 
   public static Int Int(int value) {
     return value >= -2 && value < 1000 ? INTS[value + 2] : new Int(value);
@@ -42,6 +43,10 @@ public class Python {
 
     public boolean truish() {
       return false;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public Str repr() {
+      throw new UnsupportedOperationException();
     }
 
     public Obj getItem(Obj key) {
@@ -131,6 +136,23 @@ public class Python {
     public Obj invert() {
       throw new UnsupportedOperationException();
     }
+
+    @Override
+    public String toString() {
+      return repr().value;
+    }
+  }
+
+  static class None extends Obj {
+    @Override
+    public Str repr() {
+      return Str("None");
+    }
+
+    @Override
+    public String toString() {
+      return "None";
+    }
   }
 
   static class Int extends Obj {
@@ -138,6 +160,11 @@ public class Python {
 
     public Int(int value) {
       this.value = value;
+    }
+
+    @Override
+    public Str repr() {
+      return Str(String.valueOf(value));
     }
 
     @Override
@@ -169,6 +196,27 @@ public class Python {
 
     Str(String value) {
       this.value = value;
+    }
+
+    @Override
+    public Str repr() {
+      if (value.indexOf('\'') != -1) {
+        if (value.indexOf('"') == -1) {
+          return Str('"' + value + "'");
+        }
+        StringBuilder b = new StringBuilder(value.length() * 2);
+        b.append('\'');
+        for (int i = 0; i < value.length(); i++) {
+          char ch = value.charAt(i);
+          if (ch == '\'') {
+            b.append('\\');
+          }
+          b.append(ch);
+        }
+        b.append('\'');
+        return Str(b.toString());
+      }
+      return Str('\'' + value + '\'');
     }
 
     @Override
@@ -294,6 +342,13 @@ public class Python {
       this.name = name;
       this.bases = bases;
       this.dict = dict;
+    }
+  }
+
+  static class Ellipsis extends Obj {
+    @Override
+    public Str repr() {
+      return Str("Ellipsis");
     }
   }
 

@@ -187,3 +187,11 @@ Suite[Expr(Add(Neg(Var(a)), Neg(Var(b))))]
 Suite[Expr(Power(Var(a), Var(b)))]
 >>> a ** b ** c
 Suite[Expr(Power(Var(a), Power(Var(b), Var(c))))]
+
+# constants & literals
+>>> True, False, None, ...
+Suite[Expr[Lit(1), Lit(0), Lit(None), Lit(Ellipsis)]]
+>>> 1, "a", 'b'
+Suite[Expr[Lit(1), Lit('a'), Lit('b')]]
+>>> 2, "a" 'b' """c"""
+Suite[Expr[Lit(2), Lit('abc')]]

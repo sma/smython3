@@ -616,7 +616,7 @@ abstract class Expr {
 
     @Override
     public String toString() {
-      return "Lit(" + value + ")";
+      return "Lit(" + value.repr() + ")";
     }
   }
 

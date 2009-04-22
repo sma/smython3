@@ -774,7 +774,7 @@ public class Parser {
       }
       return new Expr.Lit(Python.Str(s));
     } else if (at("...")) {
-      return new Expr.Lit(Python.Str("..."));
+      return new Expr.Lit(Python.Ellipsis);
     } else if (at("None")) {
       return new Expr.Lit(Python.None);
     } else if (at("True")) {

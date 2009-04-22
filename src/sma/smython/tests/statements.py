@@ -1,7 +1,5 @@
 # Copyright (c) 2009, Stefan Matthias Aust. All rights reserved.
 
-# TODO None shouldn't render as "null"
-
 # pass statement
 >>> pass
 Suite[Pass]
@@ -24,11 +22,11 @@ Suite[Del[Var(a), Var(b)]]
 
 # return statement (TODO must only occur in functions)
 >>> return
-Suite[Return(Lit(null))]
+Suite[Return(Lit(None))]
 >>> return None
-Suite[Return(Lit(null))]
+Suite[Return(Lit(None))]
 >>> return None,
-Suite[Return[Lit(null)]]
+Suite[Return[Lit(None)]]
 >>> return 1, 2
 Suite[Return[Lit(1), Lit(2)]]
 >>> return 1, 2,
@@ -40,15 +38,15 @@ Suite[Raise()]
 >>> raise SyntaxError
 Suite[Raise(Var(SyntaxError))]
 >>> raise SyntaxError from None
-Suite[Raise(Var(SyntaxError), Lit(null))]
+Suite[Raise(Var(SyntaxError), Lit(None))]
 
 # yield statement (TODO must only occur in functions) 
 >>> yield
-Suite[Yield(Lit(null))]
+Suite[Yield(Lit(None))]
 >>> yield None
-Suite[Yield(Lit(null))]
+Suite[Yield(Lit(None))]
 >>> yield None,
-Suite[Yield[Lit(null)]]
+Suite[Yield[Lit(None)]]
 >>> yield 1, 2
 Suite[Yield[Lit(1), Lit(2)]]
 >>> yield 1, 2,
@@ -130,7 +128,7 @@ Suite[AddAssign(Var(z), [Lit(1), Lit(2)])]
 
 # augmented assignment with yield
 >>> a += yield
-Suite[AddAssign(Var(a), (Yield(Lit(null))))]
+Suite[AddAssign(Var(a), (Yield(Lit(None))))]
 >>> a += yield 1
 Suite[AddAssign(Var(a), (Yield(Lit(1))))]
 >>> a += yield 1,
@@ -171,7 +169,7 @@ Suite[Assign([Var(a), Var(b)], [Lit(1), Lit(2)])]
 
 # assignment with yield
 >>> a = yield
-Suite[Assign((Var(a)), (Yield(Lit(null))))]
+Suite[Assign((Var(a)), (Yield(Lit(None))))]
 >>> a = yield 1
 Suite[Assign((Var(a)), (Yield(Lit(1))))]
 >>> a = yield 1,
