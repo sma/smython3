@@ -31,7 +31,11 @@ public class ParserTest {
         } else if (line.startsWith(">>> ") || line.startsWith("... ")) {
           test += line.substring(4) + "\n";
         } else if (line.length() > 0) {
-          assertEquals(line, parse(test));
+          try {
+            assertEquals(line, parse(test));
+          } catch (ParserException e) {
+            assertEquals(line, "SyntaxError");
+          }
           test = "";
         }
         line = r.readLine();

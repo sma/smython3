@@ -456,3 +456,6 @@ Suite[Try(Suite[Pass], [Except(Lit(1), Suite[Pass]), Except(Lit(2), Suite[Pass])
 ... except 1 as a: pass
 ... except 2 as b: pass
 Suite[Try(Suite[Pass], [Except(Lit(1), a, Suite[Pass]), Except(Lit(2), b, Suite[Pass])])]
+
+>>> try: pass
+SyntaxError
