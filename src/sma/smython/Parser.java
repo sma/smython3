@@ -968,7 +968,11 @@ public class Parser {
   ExprList parseExprList(boolean single) {
     ExprList exprList = new ExprList();
     exprList.single = single;
-    exprList.add(parseStarExpr());
+    Expr expr = parseStarExpr();
+    if (expr == null) {
+      throw new ParserException();
+    }
+    exprList.add(expr);
     while (at(",")) {
       exprList.single = false;
       Expr e = parseStarExpr();

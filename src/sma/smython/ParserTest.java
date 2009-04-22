@@ -65,7 +65,6 @@ public class ParserTest {
 
   @Test
   public void parseDel() {
-    assertEquals("Suite[Del[null]]", parse("del\n")); // TODO this MUST be an error
     assertEquals("Suite[Del[Var(a)]]", parse("del a\n"));
     assertEquals("Suite[Del[Var(a), Var(b)]]", parse("del a, b,\n"));
   }

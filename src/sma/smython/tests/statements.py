@@ -19,6 +19,8 @@ Suite[Del[Var(a)]]
 Suite[Del[Var(a), Var(b)]]
 >>> del a, b,
 Suite[Del[Var(a), Var(b)]]
+>>> del
+SyntaxError
 
 # return statement (TODO must only occur in functions)
 >>> return
