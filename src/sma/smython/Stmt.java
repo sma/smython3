@@ -592,15 +592,32 @@ abstract class Stmt {
         }
       }
     }
+
+    @Override
+    public String toString() {
+      return "Try(" + bodySuite + ", " + exceptList +
+          (elseSuite == null && finallySuite == null ? "" : ", " + elseSuite) +
+          (finallySuite == null ? "" : ", " + finallySuite) + ")";
+    }
   }
 
   static class Except {
     final Expr clause;
     final String name;
+    final Suite suite;
 
-    Except(Expr clause, String name) {
+    Except(Expr clause, String name, Suite suite) {
       this.clause = clause;
       this.name = name;
+      this.suite = suite;
+    }
+
+    @Override
+    public String toString() {
+      return "Except(" +
+          (clause == null ? "" : clause + ", ") +
+          (name == null ? "" : name + ", ") +
+          suite + ")";
     }
   }
 

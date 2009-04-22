@@ -347,3 +347,112 @@ Suite[For([Var(a)], (Var(items)), Suite[Pass], Suite[Pass, Pass])]
 ...   pass
 ...   pass
 Suite[For([Var(a)], (Var(items)), Suite[Pass], Suite[Pass, Pass])]
+
+# try/except statement (try suite alternations)
+>>> try: pass
+... except: pass
+Suite[Try(Suite[Pass], [Except(Suite[Pass])])]
+>>> try:
+...   pass
+... except: pass
+Suite[Try(Suite[Pass], [Except(Suite[Pass])])]
+>>> try: pass; pass
+... except: pass
+Suite[Try(Suite[Pass, Pass], [Except(Suite[Pass])])]
+>>> try:
+...   pass; pass
+... except: pass
+Suite[Try(Suite[Pass, Pass], [Except(Suite[Pass])])]
+>>> try:
+...   pass
+...   pass
+... except: pass
+Suite[Try(Suite[Pass, Pass], [Except(Suite[Pass])])]
+
+# try/except statement (except suite alternations)
+>>> try: pass
+... except: pass; pass
+Suite[Try(Suite[Pass], [Except(Suite[Pass, Pass])])]
+>>> try: pass
+... except:
+...   pass
+Suite[Try(Suite[Pass], [Except(Suite[Pass])])]
+>>> try: pass
+... except:
+...   pass; pass
+Suite[Try(Suite[Pass], [Except(Suite[Pass, Pass])])]
+>>> try: pass
+... except:
+...   pass
+...   pass
+Suite[Try(Suite[Pass], [Except(Suite[Pass, Pass])])]
+
+# try/except/else statement
+>>> try: pass
+... except: pass
+... else: pass
+Suite[Try(Suite[Pass], [Except(Suite[Pass])], Suite[Pass])]
+>>> try: pass
+... except: pass
+... else: pass; pass
+Suite[Try(Suite[Pass], [Except(Suite[Pass])], Suite[Pass, Pass])]
+>>> try: pass
+... except: pass
+... else:
+...   pass; pass
+Suite[Try(Suite[Pass], [Except(Suite[Pass])], Suite[Pass, Pass])]
+>>> try: pass
+... except: pass
+... else:
+...   pass
+Suite[Try(Suite[Pass], [Except(Suite[Pass])], Suite[Pass])]
+>>> try: pass
+... except: pass
+... else:
+...   pass
+...   pass
+Suite[Try(Suite[Pass], [Except(Suite[Pass])], Suite[Pass, Pass])]
+
+# try/finally statement
+>>> try: pass
+... finally: pass
+Suite[Try(Suite[Pass], [], null, Suite[Pass])]
+>>> try: pass
+... finally:
+...   pass
+Suite[Try(Suite[Pass], [], null, Suite[Pass])]
+>>> try: pass
+... finally: pass; pass
+Suite[Try(Suite[Pass], [], null, Suite[Pass, Pass])]
+>>> try: pass
+... finally:
+...   pass; pass
+Suite[Try(Suite[Pass], [], null, Suite[Pass, Pass])]
+>>> try: pass
+... finally:
+...   pass
+...   pass
+Suite[Try(Suite[Pass], [], null, Suite[Pass, Pass])]
+
+# try/except/finally statement
+>>> try: pass
+... except: pass
+... finally: pass
+Suite[Try(Suite[Pass], [Except(Suite[Pass])], null, Suite[Pass])]
+
+# try/except/else/finally statement
+>>> try: pass
+... except: pass
+... else: pass
+... finally: pass
+Suite[Try(Suite[Pass], [Except(Suite[Pass])], Suite[Pass], Suite[Pass])]
+
+# try/except statement (multiple except clauses)
+>>> try: pass
+... except 1: pass
+... except 2: pass
+Suite[Try(Suite[Pass], [Except(Lit(1), Suite[Pass]), Except(Lit(2), Suite[Pass])])]
+>>> try: pass
+... except 1 as a: pass
+... except 2 as b: pass
+Suite[Try(Suite[Pass], [Except(Lit(1), a, Suite[Pass]), Except(Lit(2), b, Suite[Pass])])]

@@ -295,7 +295,8 @@ public class Parser {
         // except_clause: 'except' [test ['as' NAME]]
         Expr clause = parseTest();
         String name = at("as") ? parseName() : null;
-        exceptList.add(new Stmt.Except(clause, name));
+        expect(":");
+        exceptList.add(new Stmt.Except(clause, name, parseSuite()));
       }
       Suite elseSuite = null;
       if (exceptList.size() > 0) {
