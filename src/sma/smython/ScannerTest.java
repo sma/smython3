@@ -125,4 +125,9 @@ public class ScannerTest {
     assertEquals("STR ", scan("'''a'a''a'''"));
     assertEquals("STR ", scan("\"\"\"a\"a\"\"a\"\"\""));
   }
+
+  @Test
+  public void numbers() {
+    assertEquals("NUM NUM NUM NUM ", scan("0 0b10100 0o777 0x01AbCdEf"));
+  }
 }

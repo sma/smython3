@@ -10,7 +10,6 @@ import java.util.Arrays;
 // TODO string escapes, bytes strings, raw strings
 // TODO floats, bigints
 // TODO line continuations
-// TODO hex constants
 public class Scanner {
   private static final Set<String> keywords = new HashSet<String>(Arrays.asList((
       "and as assert break class continue def del elif else except finally for from global if import in is " +
@@ -386,28 +385,38 @@ public class Scanner {
   }
 
   private String parseNumber(char ch) {
-    StringBuilder b = new StringBuilder(32);
     if (ch == '0') {
-      ch = get();
-      if (ch == 'x' || ch == 'X') {
-        ch = get();
-        while (Character.isDigit(ch) || ch >= 'a' && ch <= 'f' || ch >= 'A' && ch <= 'F') {
-          b.append(ch);
-          ch = get();
-        }
-        value = Integer.valueOf(b.toString(), 16);
-        index -= 1;
-        return "NUM";
+      switch (get()) {
+        case 'b':
+        case 'B':
+          return parseInteger(get(), 2);
+        case 'o':
+        case 'O':
+          return parseInteger(get(), 8);
+        case 'x':
+        case 'X':
+          return parseInteger(get(), 16);
+        default:
+          break;
       }
       index -= 1;
-      ch = '0';
     }
-    while (Character.isDigit(ch)) {
-      b.append(ch);
+    return parseInteger(ch, 10);
+  }
+
+  private String parseInteger(char ch, int radix) {
+    int digit = Character.digit(ch, radix);
+    if (digit == -1) {
+      throw new ParserException("invalid token " + ch);
+    }
+    int intval = 0;
+    while (digit != -1) {
+      intval = intval * radix + digit;
       ch = get();
+      digit = Character.digit(ch, radix);
     }
-    value = new Integer(b.toString());
     index -= 1;
+    value = new Integer(intval);
     return "NUM";
   }
 
