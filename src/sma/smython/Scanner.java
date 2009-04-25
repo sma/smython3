@@ -349,30 +349,37 @@ public class Scanner {
   }
 
   private String parseString(char q) {
+    char ch = get();
+    if (ch == q) {
+      if (get() == q) {
+        return parseMultilineString(q);
+      }
+      index -= 1;
+    }
+    StringBuilder b = new StringBuilder(256);
+    while (ch != q) {
+      b.append(ch);
+      ch = get();
+    }
+    value = b.toString();
+    return "STR";
+  }
+
+  private String parseMultilineString(char q) {
     StringBuilder b = new StringBuilder(256);
     char ch = get();
-    if (ch == q && get() == q) {
-      // tripple quote
-      ch = get();
-      while (true) {
-        if (ch == q) {
+    while (true) {
+      if (ch == q) {
+        if (get() == q) {
           if (get() == q) {
-            if (get() == q) {
-              break;
-            }
-            index -= 1;
+            break;
           }
           index -= 1;
         }
-        b.append(ch);
-        ch = get();
+        index -= 1;
       }
-    } else {
-      index -= 1;
-      while (ch != q) {
-        b.append(ch);
-        ch = get();
-      }
+      b.append(ch);
+      ch = get();
     }
     value = b.toString();
     return "STR";
