@@ -291,6 +291,12 @@ public class Scanner {
         ch = get();
         if (ch == '\'' || ch == '"') {
           return parseString(ch); // TODO return BYTES not STR
+        } else if (ch == 'r' || ch == 'R') {
+          ch = get();
+          if (ch == '\'' || ch == '"') {
+            return parseString(ch); // TODO return BYTES not STR
+          }
+          index -= 1;
         }
         index -= 1;
         return parseName('b');
