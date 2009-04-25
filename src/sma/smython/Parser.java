@@ -770,8 +770,10 @@ public class Parser {
       return expr;
     } else if (is("NAME")) {
       return new Expr.Var(parseName());
-    } else if (is("NUM")) {
+    } else if (is("INT")) {
       return new Expr.Lit(Python.Int((Integer) value()));
+    } else if (is("FLOAT")) {
+      return new Expr.Lit(Python.Float((Double) value()));
     } else if (is("STR")) {
       String s = (String) value();
       while (is("STR")) {

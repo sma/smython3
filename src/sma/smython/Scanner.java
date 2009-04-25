@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Arrays;
 
 // TODO bytes strings, raw strings
-// TODO floats, bigints
+// TODO bigints
 // TODO line continuations
 public class Scanner {
   private static final Set<String> keywords = new HashSet<String>(Arrays.asList((
@@ -40,7 +40,7 @@ public class Scanner {
 
   /**
    * Returns the next token. END marks the end of the source.
-   * For NUM, STR and NAME, call <code>value()</code> to get the actual value.
+   * For INT, FLOAT, STR and NAME, call <code>value()</code> to get the actual value.
    */
   public String next() {
     // if we're currently dedenting and haven't reached the final indentation level, continue to dedent
@@ -167,7 +167,10 @@ public class Scanner {
         index -= 1;
         return "-";
       case '.':
-        if (get() == '.') {
+        ch = get();
+        if (Character.isDigit(ch)) {
+          return parseFloat(0, ch);
+        } else if (ch == '.') {
           if (get() == '.') {
             return "...";
           }
@@ -486,10 +489,51 @@ public class Scanner {
       ch = get();
       digit = Character.digit(ch, radix);
     }
+    if (radix == 10) {
+      if (ch == '.') {
+        ch = get();
+        if (Character.isDigit(ch) || ch == 'e' || ch == 'E') {
+          return parseFloat(intval, ch);
+        }
+        index -= 1;
+        value = new Double(intval);
+        return "FLOAT";
+      } else if (ch == 'e' || ch == 'E') {
+        return parseFloat(intval, ch);
+      }
+    }
     index -= 1;
     value = new Integer(intval);
-    return "NUM";
+    return "INT";
   }
+
+  private String parseFloat(int val, char ch) {
+    StringBuilder b = new StringBuilder(32);
+    b.append(val);
+    while (Character.isDigit(ch)) {
+      b.append(ch);
+      ch = get();
+    }
+    if (ch == 'e' || ch == 'E') {
+      b.append(ch);
+      ch = get();
+      if (ch == '-' || ch == '+') {
+        b.append(ch);
+        ch = get();
+      }
+      if (!Character.isDigit(ch)) {
+        throw new ParserException("invalid token");
+      }
+      while (Character.isDigit(ch)) {
+        b.append(ch);
+        ch = get();
+      }
+    }
+    index -= 1;
+    value = new Double(b.toString());
+    return "FLOAT";
+  }
+
 
   private String parseName(char ch) {
     StringBuilder b = new StringBuilder(32);

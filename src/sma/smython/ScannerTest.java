@@ -31,7 +31,7 @@ public class ScannerTest {
 
   @Test
   public void simpleTokens() {
-    assertEquals("NUM if NAME«a» : return ", scan("1 if a: return"));
+    assertEquals("INT if NAME«a» : return ", scan("1 if a: return"));
   }
 
   @Test
@@ -43,9 +43,9 @@ public class ScannerTest {
 
   @Test
   public void moreParentheses() {
-    assertEquals("{ NUM NUM } ", scan("{1\n  2\n}"));
+    assertEquals("{ INT INT } ", scan("{1\n  2\n}"));
     assertEquals(
-        ": NEWLINE INDENT { NUM NUM } NEWLINE NUM DEDENT ",
+        ": NEWLINE INDENT { INT INT } NEWLINE INT DEDENT ",
         scan(":\n  {1\n  2\n}\n  3"));
   }
 
@@ -97,20 +97,20 @@ public class ScannerTest {
 
   @Test
   public void exoticNumber() {
-    assertEquals("NUM ", scan("\u0664\u06F2")); // arabic
+    assertEquals("INT ", scan("\u0664\u06F2")); // arabic
   }
 
   @Test
   public void newlines() {
     assertEquals("", scan("\n\n")); 
-    assertEquals("NUM NEWLINE ", scan("1\n"));
-    assertEquals("NUM NEWLINE NUM ", scan("1\n\n2"));
+    assertEquals("INT NEWLINE ", scan("1\n"));
+    assertEquals("INT NEWLINE INT ", scan("1\n\n2"));
   }
 
   @Test
   public void comments() {
     assertEquals("", scan("# just a comment\n"));
-    assertEquals("NUM NEWLINE NUM ", scan("1 #\n2"));
+    assertEquals("INT NEWLINE INT ", scan("1 #\n2"));
     assertEquals("INDENT NAME«a» NEWLINE NAME«b» NEWLINE DEDENT ", scan("\n  a\n  #\n  b\n"));
     assertEquals("INDENT NAME«a» NEWLINE NAME«b» NEWLINE DEDENT ", scan("\n  a\n#\n  b\n"));
   }
@@ -127,8 +127,23 @@ public class ScannerTest {
   }
 
   @Test
-  public void numbers() {
-    assertEquals("NUM NUM NUM NUM ", scan("0 0b10100 0o777 0x01AbCdEf"));
+  public void integers() {
+    assertEquals("INT INT INT INT ", scan("0 0b10100 0o777 0x01AbCdEf"));
+  }
+
+  @Test
+  public void floats() {
+    assertEquals("FLOAT ", scan(".1"));
+    assertEquals("FLOAT ", scan("2."));
+    assertEquals("FLOAT ", scan("3.0"));
+    assertEquals("FLOAT ", scan("12.345678"));
+    assertEquals("FLOAT ", scan("1e10"));
+    assertEquals("FLOAT ", scan("2E20"));
+    assertEquals("FLOAT ", scan(".1e-20"));
+    assertEquals("FLOAT ", scan(".1e+30"));
+    assertEquals("FLOAT ", scan("12.E30"));
+    assertEquals("FLOAT ", scan("12.E-45"));
+    assertEquals("FLOAT ", scan("1.79769313486231e+308"));
   }
 
   @Test

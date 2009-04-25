@@ -29,6 +29,10 @@ public class Python {
     return value >= -2 && value < 1000 ? INTS[value + 2] : new Int(value);
   }
 
+  public static Float Float(double value) {
+    return new Float(value);
+  }
+
   public static Str Str(String value) {
     return new Str(value);
   }
@@ -183,6 +187,34 @@ public class Python {
     @Override
     public int hashCode() {
       return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+  }
+
+  static class Float extends Obj {
+    final double value;
+
+    Float(double value) {
+      this.value = value;
+    }
+
+    @Override
+    public Str repr() {
+      return Str(String.valueOf(value));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      return o == this || o instanceof Float && ((Float) o).value == value;
+    }
+
+    @Override
+    public int hashCode() {
+      return (int) value;
     }
 
     @Override
