@@ -55,7 +55,6 @@ public class Scanner {
     char ch = get();
     while (Character.isWhitespace(ch) || ch == '#') {
       if (level == 0) {
-        if (ch == '\t') throw new RuntimeException("TAB"); // TODO need to set ci to next index % 8
         if (ch == '\n') {
           if (!beginOfLine) {
             beginOfLine= true; // with the next char, we're at the beginning of a line
@@ -68,7 +67,12 @@ public class Scanner {
           }
           continue;
         } else if (beginOfLine) {
-          ci += 1; // only track the indent at the beginning of a line
+          // only track the indent at the beginning of a line
+          if (ch == '\t') {
+            ci = ((ci / 8) + 1) * 8; 
+          } else {
+            ci += 1;
+          }
         }
       } else if (ch == '#') {
         while (ch != 0 && ch != '\n') {

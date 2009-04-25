@@ -9,6 +9,8 @@ Current State
 
 I can parse most stuff according to <http://docs.python.org/dev/py3k/reference/grammar.html>.
 
+I can read in 1034 Python files from the python 3.0 distribution's lib directory.
+
 I have an experimental runtime system (which cannot implement `yield`) in place.
 
 

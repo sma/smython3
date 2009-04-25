@@ -3,22 +3,31 @@
  */
 package sma.smython;
 
-import org.junit.Test;
-
-import java.io.*;
-
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import java.io.*;
+
 public class SyntaxTest {
-  public static junit.framework.Test suite() {
+  private static final String PYTHON3_LIB = "/Users/sma/python3/lib/python3.0";
+
+  public static TestSuite suite() {
     TestSuite testSuite = new TestSuite("SyntaxTest");
-    testSuite.addTest(createTests("Parse all py files", new File("/Users/sma/python3/lib/python3.0")));
-    testSuite.addTest(createTests("Parse all py test files", new File("/Users/sma/python3/lib/python3.0/test")));
+    scan(new File(PYTHON3_LIB), testSuite);
     return testSuite;
   }
 
-  private static junit.framework.Test createTests(String name, File dir) {
+  private static void scan(File dir, TestSuite testSuite) {
+    testSuite.addTest(createTests(dir));
+    for (File file : dir.listFiles()) {
+      if (file.isDirectory()) {
+        scan(file, testSuite);
+      }
+    }
+  }
+
+  private static TestSuite createTests(File dir) {
+    String name = "lib" + dir.getAbsolutePath().substring(PYTHON3_LIB.length());
     TestSuite testSuite = new TestSuite(name);
     for (File file : dir.listFiles(new FilenameFilter() {
       public boolean accept(File file, String name) {

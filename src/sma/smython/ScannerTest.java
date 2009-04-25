@@ -188,4 +188,8 @@ public class ScannerTest {
     assertEquals("FLOAT ", scan("1.2j"));
   }
 
+  @Test
+  public void testTab() {
+    assertEquals("def NEWLINE INDENT INT NEWLINE INT DEDENT ", scan("def\n  \t1\n        2"));
+  }
 }
