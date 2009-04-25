@@ -49,11 +49,6 @@ public class SyntaxTest {
   }
 
   @Test
-  public void example() throws Exception {
-    //parse("base = a or b");
-  }
-
-  @Test
   public void parseAllFilesOfThePython3Distribution() throws Exception {
     for (File file : new File("/Users/sma/python3/lib/python3.0").listFiles()) {
       if (file.getName().endsWith(".py")) {
