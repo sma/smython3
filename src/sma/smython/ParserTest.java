@@ -3,49 +3,14 @@
  */
 package sma.smython;
 
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.io.InputStream;
+import org.junit.Test;
 
 public class ParserTest {
 
   private String parse(String source) {
     Parser parser = new Parser(new Scanner(source));
     return parser.parseFileInput().toString();
-  }
-
-  private void testFile(String name) throws IOException {
-    InputStream in = ParserTest.class.getResourceAsStream(name);
-    BufferedReader r = new BufferedReader(new InputStreamReader(in));
-    try {
-      String line = r.readLine();
-      String test = "";
-      while (line != null) {
-        line = line.trim();
-        if (line.startsWith("#")) {
-        } else if (line.startsWith(">>> ") || line.startsWith("... ")) {
-          test += line.substring(4) + "\n";
-        } else if (line.length() > 0) {
-          try {
-            assertEquals(line, parse(test));
-          } catch (ParserException e) {
-            assertEquals(line, "SyntaxError");
-          }
-          test = "";
-        }
-        line = r.readLine();
-      }
-      if (test.length() > 0) {
-        fail("missing assert line");
-      }
-    } finally {
-      r.close();
-    }
   }
 
   @Test
@@ -105,16 +70,5 @@ public class ParserTest {
   public void parseComplexArglist() {
     parse("def pos2key2dict(p1, p2, *, k1=100, k2, **kwarg): pass\n");
     parse("def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10, **k:11) -> 12: pass\n");
-  }
-
-  @Test
-  public void parseFromTestsPy() throws IOException {
-    testFile("Tests.py");
-  }
-
-  @Test
-  public void parsePythonTests() throws IOException {
-    testFile("tests/statements.py");
-    testFile("tests/expressions.py");
   }
 }
