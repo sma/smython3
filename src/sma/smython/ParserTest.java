@@ -85,6 +85,11 @@ public class ParserTest {
   }
 
   @Test
+  public void parseTrailingSemicolon() {
+    assertEquals("Suite[Expr(Lit(1))]", parse("1;\n"));
+  }
+
+  @Test
   public void parseFromTestsPy() throws IOException {
     testFile("Tests.py");
   }

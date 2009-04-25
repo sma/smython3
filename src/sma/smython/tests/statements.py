@@ -653,3 +653,11 @@ Suite[Class(A, [Var(object), metaclass=Var(type)], Suite[Pass])]
 >>> @deco
 ... while 1: pass
 SyntaxError
+
+# semicolon separated statements
+>>> 1;
+Suite[Expr(Lit(1))]
+>>> 1; 2
+Suite[Expr(Lit(1)), Expr(Lit(2))]
+>>> 1; 2;
+Suite[Expr(Lit(1)), Expr(Lit(2))]

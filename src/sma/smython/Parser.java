@@ -89,9 +89,11 @@ public class Parser {
   void parseSimpleStmt(Suite suite) {
     suite.add(parseSmallStmt());
     while (at(";")) {
+      if (is("NEWLINE")) {
+        break;
+      }
       suite.add(parseSmallStmt());
     }
-    at(";");
     expect("NEWLINE");
   }
 
@@ -467,7 +469,7 @@ public class Parser {
           params.restPositional = parseParam(typed, false);
         } else {
           params.restPositional = new Params.Param(null, null, null);
-          throw new UnsupportedOperationException();
+          //throw new UnsupportedOperationException(); TODO removed to parse dist files
         }
       } else if (at("**")) {
         if (params.restKeyword != null) {
