@@ -421,21 +421,25 @@ abstract class Stmt {
   }
 
   static class Assign extends Stmt {
-    final ExprList left;
+    final List<ExprList> left;
     final ExprList right;
 
-    Assign(ExprList left, ExprList right) {
+    Assign(List<ExprList> left, ExprList right) {
       this.left = left;
       this.right = right;
     }
 
     void execute(Frame f) {
-      left.set(f, right.eval(f));
+      Obj value = right.eval(f);
+      for (ExprList expr : left) {
+        expr.set(f, value);
+      }
     }
 
     @Override
     public String toString() {
-      return "Assign(" + left + ", " + right + ")";
+      String leftStr = left.toString();
+      return "Assign(" + leftStr.substring(1, leftStr.length() - 1) + ", " + right + ")";
     }
   }
 

@@ -80,6 +80,11 @@ public class ParserTest {
   }
 
   @Test
+  public void parseMultiAssign() {
+    assertEquals("Suite[Assign((Var(a)), (Var(b)), (Lit(1)))]", parse("a = b = 1\n"));
+  }
+
+  @Test
   public void parseFromTestsPy() throws IOException {
     testFile("Tests.py");
   }

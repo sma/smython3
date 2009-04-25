@@ -201,7 +201,17 @@ public class Parser {
       return new Stmt.OrAssign(left, parseAssign());
     }
     if (at("=")) {
-      return new Stmt.Assign(tl1, parseAssign()); // TODO support a = b = c
+      List<ExprList> lhs = new ArrayList<ExprList>();
+      lhs.add(tl1);
+      ExprList rhs = parseAssign();
+      while (at("=")) {
+        if (rhs.exprs.size() == 1 && rhs.exprs.get(0) instanceof Expr.Yield) {
+          throw new ParserException();
+        }
+        lhs.add(rhs);
+        rhs = parseAssign();
+      }
+      return new Stmt.Assign(lhs, rhs);
     }
     return new Stmt.ExprStmt(tl1);
   }

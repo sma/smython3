@@ -212,6 +212,14 @@ Suite[Assign((Var(a)), (IfElse(Lit(1), Lit(3), Lit(2))))]
 >>> a = 1 or 2
 Suite[Assign((Var(a)), (Or(Lit(1), Lit(2))))]
 
+# multi-assignment statement
+>>> a = b, = c, d = d
+Suite[Assign((Var(a)), [Var(b)], [Var(c), Var(d)], (Var(d)))]
+>>> a[0], b.c, = *d = e
+Suite[Assign([Index(Var(a), [Lit(0)]), Attr(Var(b), c)], (Star(Var(d))), (Var(e)))]
+>>> a = yield 1 = yield 2
+SyntaxError
+
 # statement expression
 >>> print
 Suite[Expr(Var(print))]
