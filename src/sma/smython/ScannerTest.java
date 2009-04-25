@@ -130,4 +130,26 @@ public class ScannerTest {
   public void numbers() {
     assertEquals("NUM NUM NUM NUM ", scan("0 0b10100 0o777 0x01AbCdEf"));
   }
+
+  @Test
+  public void stringEscapes() {
+    assertEquals("STR ", scan("'\\''"));
+    assertEquals("STR ", scan("'\\a\\b\\f\\n\\n\\r\\t\\v\\777\\xFf\\u20aC\\\\'"));
+    assertEquals("STR ", scan("'a\\\nb'"));
+  }
+
+  @Test(expected = ParserException.class)
+  public void unterminatedSingleQuotedString() {
+    scan("'abc");
+  }
+
+  @Test(expected = ParserException.class)
+  public void unterminatedTrippleQuotedString() {
+    scan("'''abc");
+  }
+
+  @Test(expected = ParserException.class)
+  public void invalidStringEscape() {
+    scan("'''\\xQ'''");
+  }
 }

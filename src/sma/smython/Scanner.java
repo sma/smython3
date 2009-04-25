@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Arrays;
 
-// TODO string escapes, bytes strings, raw strings
+// TODO bytes strings, raw strings
 // TODO floats, bigints
 // TODO line continuations
 public class Scanner {
@@ -357,6 +357,12 @@ public class Scanner {
     }
     StringBuilder b = new StringBuilder(256);
     while (ch != q) {
+      if (ch == '\\') {
+        ch = parseStringEscape();
+      }
+      if (ch == 0) {
+        throw new ParserException("EOL while scanning string literal");
+      }
       b.append(ch);
       ch = get();
     }
@@ -377,11 +383,76 @@ public class Scanner {
         }
         index -= 1;
       }
+      if (ch == '\\') {
+        ch = parseStringEscape();
+      }
+      if (ch == 0) {
+        throw new ParserException("EOF while scanning triple-quoted string literal");
+      }
       b.append(ch);
       ch = get();
     }
     value = b.toString();
     return "STR";
+  }
+
+  private char parseStringEscape() {
+    char ch = get();
+    switch (ch) {
+      case '\n':
+        return get();
+      case 'a':
+        return '\007'; // BEL
+      case 'b':
+        return '\b'; // BS
+      case 'f':
+        return '\f'; // FF
+      case 'n':
+        return '\n'; // LF
+      case 'r':
+        return '\r'; // CR
+      case 't':
+        return '\t'; // HT
+      case 'v':
+        return '\013'; //VT
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7': {
+        int val = Character.digit(ch, 8);
+        for (int i = 0; i < 2; i++) {
+          int d = Character.digit(get(), 8);
+          if (d == -1) {
+            index -= 1;
+            break;
+          }
+          val = val * 8 + d;
+        }
+        return (char) val;
+      }
+      case 'x':
+        return parseStringEscapeChar(2);
+      case 'u':
+        return parseStringEscapeChar(4);
+      default:
+        return ch;
+    }
+  }
+
+  private char parseStringEscapeChar(int len) {
+    int val = 0;
+    for (int i = 0; i < len; i++) {
+      int d = Character.digit(get(), 16);
+      if (d == -1) {
+        throw new ParserException("invalid hex digit in string escape");
+      }
+      val = val * 16 + d;
+    }
+    return (char) val;
   }
 
   private String parseNumber(char ch) {
