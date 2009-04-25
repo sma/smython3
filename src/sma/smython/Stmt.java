@@ -193,10 +193,12 @@ abstract class Stmt {
   }
 
   static class From extends Stmt {
+    final int dots;
     final List<String> dottedName;
     final List<NameAlias> importNames;
 
-    From(List<String> dottedName, List<NameAlias> importNames) {
+    From(int dots, List<String> dottedName, List<NameAlias> importNames) {
+      this.dots = dots;
       this.dottedName = dottedName;
       this.importNames = importNames;
     }
@@ -207,7 +209,14 @@ abstract class Stmt {
 
     @Override
     public String toString() {
-      return "From(" + join(dottedName, ".") + ", " + importNames + ")";
+      String s = "";
+      for (int i = 0; i < dots; i++) {
+        s += ".";
+      }
+      if (dottedName != null) {
+        s += join(dottedName, ".");
+      }
+      return "From(" + s + ", " + importNames + ")";
     }
   }
 

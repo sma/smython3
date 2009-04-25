@@ -90,6 +90,24 @@ public class ParserTest {
   }
 
   @Test
+  public void parseRelativeImport() {
+    assertEquals("Suite[From(.a, [])]", parse("from .a import *\n"));
+    assertEquals("Suite[From(..a, [])]", parse("from ..a import *\n"));
+    assertEquals("Suite[From(...a, [])]", parse("from ...a import *\n"));
+    assertEquals("Suite[From(....a, [])]", parse("from ....a import *\n"));
+    assertEquals("Suite[From(., [])]", parse("from . import *\n"));
+    assertEquals("Suite[From(.., [])]", parse("from .. import *\n"));
+    assertEquals("Suite[From(..., [])]", parse("from ... import *\n"));
+    assertEquals("Suite[From(...., [])]", parse("from .... import *\n"));
+  }
+
+  @Test
+  public void parseComplexArglist() {
+    parse("def pos2key2dict(p1, p2, *, k1=100, k2, **kwarg): pass\n");
+    parse("def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10, **k:11) -> 12: pass\n");
+  }
+
+  @Test
   public void parseFromTestsPy() throws IOException {
     testFile("Tests.py");
   }

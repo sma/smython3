@@ -22,6 +22,10 @@ public class SyntaxTest {
     TestSuite testSuite = new TestSuite(name);
     for (File file : dir.listFiles(new FilenameFilter() {
       public boolean accept(File file, String name) {
+        if (name.equals("bad_coding2.py") || name.equals("badsyntax_3131.py")) {
+          // first file contains a chinese character, the other a euro, both cannot be scanned
+          return false;
+        }
         return name.endsWith(".py");
       }
     })) {

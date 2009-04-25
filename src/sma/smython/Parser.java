@@ -140,7 +140,20 @@ public class Parser {
     }
     if (at("from")) {
       // import_from: ('from' (('.' | '...')* dotted_name | ('.' | '...')+) 'import' ('*' | '(' import_as_names ')' | import_as_names))
-      List<String> dottedName = parseDottedName();
+      int dots = 0;
+      while (true) {
+        if (at(".")) {
+          dots += 1;
+        } else if (at("...")) {
+          dots += 3;
+        } else {
+          break;
+        }
+      }
+      List<String> dottedName = null;
+      if (dots == 0 || is("NAME")) {
+        dottedName = parseDottedName();
+      }
       expect("import");
       List<Stmt.NameAlias> names;
       if (at("*")) {
@@ -151,7 +164,7 @@ public class Parser {
       } else {
         names = parseImportAsNames();
       }
-      return new Stmt.From(dottedName, names); // TODO support . and ..
+      return new Stmt.From(dots, dottedName, names);
     }
     if (at("global")) {
       // global_stmt: 'global' NAME (',' NAME)*
@@ -450,11 +463,12 @@ public class Parser {
   private Params parseArgsList(boolean typed) {
     Params params = new Params();
     boolean kwseen = false;
+    boolean starseen = false;
     while (true) {
       if (is("NAME")) {
         Params.Param param = parseParam(typed, true);
         if (kwseen) {
-          if (param.init == null) {
+          if (!starseen && param.init == null) {
             throw new ParserException();
           }
         } else {
@@ -465,6 +479,7 @@ public class Parser {
         if (params.restPositional != null || params.restKeyword != null) {
           throw new ParserException();
         }
+        starseen = true;
         if (is("NAME")) {
           params.restPositional = parseParam(typed, false);
         } else {

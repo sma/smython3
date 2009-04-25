@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 // TODO bytes strings, raw strings
 // TODO bigints
+// TODO imaginary numbers (j)
 // TODO line continuations
 public class Scanner {
   private static final Set<String> keywords = new HashSet<String>(Arrays.asList((
@@ -54,7 +55,7 @@ public class Scanner {
     char ch = get();
     while (Character.isWhitespace(ch) || ch == '#') {
       if (level == 0) {
-        if (ch == '\t') throw new RuntimeException("TAB"); // TODO
+        if (ch == '\t') throw new RuntimeException("TAB"); // TODO need to set ci to next index % 8
         if (ch == '\n') {
           if (!beginOfLine) {
             beginOfLine= true; // with the next char, we're at the beginning of a line
@@ -115,7 +116,7 @@ public class Scanner {
         ch = '!'; // invalid character
         break;
       case '"':
-        return parseString(ch);
+        return parseString(ch, false);
       case '%':
         if (get() == '=') {
           return "%=";
@@ -129,7 +130,7 @@ public class Scanner {
         index -= 1;
         return "&";
       case '\'':
-        return parseString(ch);
+        return parseString(ch, false);
       case '(':
         level += 1;
         return "(";
@@ -290,11 +291,11 @@ public class Scanner {
       case 'b':
         ch = get();
         if (ch == '\'' || ch == '"') {
-          return parseString(ch); // TODO return BYTES not STR
+          return parseString(ch, false, true); // TODO return BYTES not STR
         } else if (ch == 'r' || ch == 'R') {
           ch = get();
           if (ch == '\'' || ch == '"') {
-            return parseString(ch); // TODO return BYTES not STR
+            return parseString(ch, true); // TODO return BYTES not STR
           }
           index -= 1;
         }
@@ -319,7 +320,7 @@ public class Scanner {
       case 'r':
         ch = get();
         if (ch == '\'' || ch == '"') {
-          return parseString(ch); // TODO support raw
+          return parseString(ch, true); // TODO support raw
         }
         index -= 1;
         return parseName('r');
@@ -353,14 +354,18 @@ public class Scanner {
           return parseName(ch);
         }
     }
-    throw new RuntimeException("unexpected " + ch);
+    throw new ParserException("unexpected " + ch);
   }
 
-  private String parseString(char q) {
+  private String parseString(char q, boolean raw) {
+    return parseString(q, raw, false);
+  }
+
+  private String parseString(char q, boolean raw, boolean bytes) {
     char ch = get();
     if (ch == q) {
       if (get() == q) {
-        return parseMultilineString(q);
+        return parseMultilineString(q, raw, bytes);
       }
       index -= 1;
     }
@@ -370,7 +375,21 @@ public class Scanner {
         throw new ParserException("EOL while scanning string literal");
       }
       if (ch == '\\') {
-        ch = parseStringEscape();
+        if (raw) {
+          b.append(ch);
+          ch = get();
+          if (ch == 0) {
+            throw new ParserException("EOL while scanning string literal"); // TODO refactor
+          }
+        } else {
+          ch = get();
+          if (ch == '\n') {
+            ch = get();
+            continue; 
+          }
+          index -= 1;
+          ch = parseStringEscape(bytes);
+        }
       }
       b.append(ch);
       ch = get();
@@ -379,7 +398,7 @@ public class Scanner {
     return "STR";
   }
 
-  private String parseMultilineString(char q) {
+  private String parseMultilineString(char q, boolean raw, boolean bytes) {
     StringBuilder b = new StringBuilder(256);
     char ch = get();
     while (true) {
@@ -396,7 +415,21 @@ public class Scanner {
         index -= 1;
       }
       if (ch == '\\') {
-        ch = parseStringEscape();
+        if (raw) {
+          b.append(ch);
+          ch = get();
+          if (ch == 0) {
+            throw new ParserException("EOF while scanning triple-quoted string literal"); // TODO refactor
+          }
+        } else {
+          ch = get();
+          if (ch == '\n') {
+            ch = get();
+            continue;
+          }
+          index -= 1;
+          ch = parseStringEscape(bytes);
+        }
       }
       b.append(ch);
       ch = get();
@@ -405,7 +438,7 @@ public class Scanner {
     return "STR";
   }
 
-  private char parseStringEscape() {
+  private char parseStringEscape(boolean bytes) {
     char ch = get();
     switch (ch) {
       case '\n':
@@ -450,6 +483,9 @@ public class Scanner {
       case 'x':
         return parseStringEscapeChar(2);
       case 'u':
+        if (bytes) {
+          return ch;
+        }
         return parseStringEscapeChar(4);
       default:
         return ch;
@@ -505,11 +541,16 @@ public class Scanner {
         if (Character.isDigit(ch) || ch == 'e' || ch == 'E') {
           return parseFloat(intval, ch);
         }
+        if (ch == 'j') {
+          index += 1; // TODO for now, ignore complex numbers
+        }
         index -= 1;
         value = new Double(intval);
         return "FLOAT";
       } else if (ch == 'e' || ch == 'E') {
         return parseFloat(intval, ch);
+      } else if (ch == 'j') {
+        index += 1; // TODO for now, ignore complex numbers
       }
     }
     index -= 1;
@@ -538,6 +579,9 @@ public class Scanner {
         b.append(ch);
         ch = get();
       }
+    }
+    if (ch == 'j') {
+      index += 1; // TODO for now, ignore complex numbers
     }
     index -= 1;
     value = new Double(b.toString());

@@ -150,8 +150,12 @@ public class ScannerTest {
   public void stringEscapes() {
     assertEquals("STR ", scan("'\\''"));
     assertEquals("STR ", scan("'\\a\\b\\f\\n\\n\\r\\t\\v\\777\\xFf\\u20aC\\\\'"));
-    assertEquals("STR ", scan("'a\\\nb'"));
     assertEquals("STR ", scan("'\\x00'"));
+    assertEquals("STR ", scan("'''\\x00'''"));
+    assertEquals("STR ", scan("'a\\\nb'"));
+    assertEquals("STR ", scan("'''a\\\nb'''"));
+    assertEquals("STR ", scan("'\\\n'"));
+    assertEquals("STR ", scan("'''\\\n'''"));
   }
 
   @Test(expected = ParserException.class)
@@ -168,4 +172,20 @@ public class ScannerTest {
   public void invalidStringEscape() {
     scan("'''\\xQ'''");
   }
+
+  @Test
+  public void rawStrings() {
+    assertEquals("STR ", scan("r'\\''"));
+    assertEquals("STR ", scan("r\"\\\"\""));
+    assertEquals("STR ", scan("'\\\n'"));
+  }
+
+  @Test
+  public void complex() {
+    assertEquals("INT ", scan("1j"));
+    assertEquals("FLOAT ", scan(".1j"));
+    assertEquals("FLOAT ", scan("1.j"));
+    assertEquals("FLOAT ", scan("1.2j"));
+  }
+
 }
