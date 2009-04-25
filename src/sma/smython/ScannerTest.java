@@ -151,6 +151,7 @@ public class ScannerTest {
     assertEquals("STR ", scan("'\\''"));
     assertEquals("STR ", scan("'\\a\\b\\f\\n\\n\\r\\t\\v\\777\\xFf\\u20aC\\\\'"));
     assertEquals("STR ", scan("'a\\\nb'"));
+    assertEquals("STR ", scan("'\\x00'"));
   }
 
   @Test(expected = ParserException.class)

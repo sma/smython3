@@ -360,11 +360,11 @@ public class Scanner {
     }
     StringBuilder b = new StringBuilder(256);
     while (ch != q) {
+      if (ch == 0 || ch == '\n') {
+        throw new ParserException("EOL while scanning string literal");
+      }
       if (ch == '\\') {
         ch = parseStringEscape();
-      }
-      if (ch == 0) {
-        throw new ParserException("EOL while scanning string literal");
       }
       b.append(ch);
       ch = get();
@@ -377,6 +377,9 @@ public class Scanner {
     StringBuilder b = new StringBuilder(256);
     char ch = get();
     while (true) {
+      if (ch == 0) {
+        throw new ParserException("EOF while scanning triple-quoted string literal");
+      }
       if (ch == q) {
         if (get() == q) {
           if (get() == q) {
@@ -389,9 +392,6 @@ public class Scanner {
       if (ch == '\\') {
         ch = parseStringEscape();
       }
-      if (ch == 0) {
-        throw new ParserException("EOF while scanning triple-quoted string literal");
-      }
       b.append(ch);
       ch = get();
     }
@@ -403,7 +403,11 @@ public class Scanner {
     char ch = get();
     switch (ch) {
       case '\n':
-        return get();
+        ch = get();
+        if (ch == 0) {
+          throw new ParserException("EOF in line continuation");
+        }
+        return ch;
       case 'a':
         return '\007'; // BEL
       case 'b':
@@ -533,7 +537,6 @@ public class Scanner {
     value = new Double(b.toString());
     return "FLOAT";
   }
-
 
   private String parseName(char ch) {
     StringBuilder b = new StringBuilder(32);
